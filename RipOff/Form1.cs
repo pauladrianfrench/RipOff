@@ -13,6 +13,9 @@ namespace RipOff
     {
         static GameArea gameArea;
         Timer time;
+        static bool left;
+        static bool right;
+        static bool drive;
 
         public Form1()
         {
@@ -28,11 +31,16 @@ namespace RipOff
 
             time = new Timer();
             time.Enabled = false;
-            time.Interval = 1;
+            time.Interval = 25;
             time.Tick += UpdateGameArea;
 
             gameArea = new GameArea(dp);
             gameArea.Draw();
+
+            left = false;
+            right = false;
+            drive = false;
+            this.Focus();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -52,11 +60,56 @@ namespace RipOff
 
         static void UpdateGameArea(Object sender, EventArgs e)
         {
-            gameArea.Vehicle.Figure.Drive(5);
-            gameArea.Vehicle.Figure.Rotate(0.05);
+            if (drive)
+            {
+                gameArea.Vehicle.Figure.Drive(10);
+            }
+            if (left)
+            {
+                gameArea.Vehicle.Figure.Rotate(0.05);
+            }
+
+            if (right)
+            {
+                gameArea.Vehicle.Figure.Rotate(-0.05);
+            }
             gameArea.DrawParam.Graphics.Clear(Color.White);
             gameArea.Draw();
         }
 
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 'a')
+            {
+                left = true;
+                right = false;
+            }
+            if (e.KeyChar == 'd')
+            {
+                right = true;
+                left = false;
+            }
+            if (e.KeyChar == 'l')
+            {
+                drive = true;
+            }
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+
+            if (e.KeyData == Keys.A)
+            {
+                left = false;
+            }
+            if (e.KeyData == Keys.D)
+            {
+                right = false;
+            }
+            if (e.KeyData == Keys.L)
+            {
+                drive = false;
+            }
+        }
     }
 }
