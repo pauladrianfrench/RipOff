@@ -11,7 +11,8 @@ namespace RipOff
 {
     public partial class Form1 : Form
     {
-        GameArea gameArea;
+        static GameArea gameArea;
+        Timer time;
 
         public Form1()
         {
@@ -21,9 +22,14 @@ namespace RipOff
 
             dp.Graphics = this.CreateGraphics();
             dp.Graphics.Clear(Color.White);
-            dp.Trans = new Trans { XScale = 1, YScale = 1, Origin = new Point(100, 500) };
+            dp.Trans = new Trans { XScale = 1, YScale = 1, Origin = new Point(500, 250) };
             dp.Pen = new Pen(Color.Blue);
             dp.FillBrush = new SolidBrush(Color.GreenYellow);
+
+            time = new Timer();
+            time.Enabled = false;
+            time.Interval = 1;
+            time.Tick += UpdateGameArea;
 
             gameArea = new GameArea(dp);
             gameArea.Draw();
@@ -41,7 +47,13 @@ namespace RipOff
 
         private void button1_Click(object sender, EventArgs e)
         {
-            gameArea.Vehicle.Figure.Rotate(-0.2);
+            time.Enabled = (time.Enabled) ? false : true;
+        }
+
+        static void UpdateGameArea(Object sender, EventArgs e)
+        {
+            gameArea.Vehicle.Figure.Drive(5);
+            gameArea.Vehicle.Figure.Rotate(0.05);
             gameArea.DrawParam.Graphics.Clear(Color.White);
             gameArea.Draw();
         }

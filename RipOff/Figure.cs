@@ -12,6 +12,7 @@ namespace RipOff
     
     public class Figure
     {
+        MatrixPoint centre;
         public Figure()
         {
             this.Outline = new List<Line>();
@@ -27,12 +28,25 @@ namespace RipOff
             this.Outline.Add(new Line(new MatrixPoint(-1, 15), new MatrixPoint(1, 15)));
             this.Outline.Add(new Line(new MatrixPoint(1, 15), new MatrixPoint(1, 10)));
 
-            this.Centre = new MatrixPoint(0, 0);
+            this.centre = new MatrixPoint(0, 0);
 
         }
 
         public List<Line> Outline { get; private set; }
-        public MatrixPoint Centre { get; set; }
+        public MatrixPoint Centre
+        {
+            get { return centre; }
+            set
+            {
+                MatrixPoint diff = value - centre;
+                centre = value;
+                foreach (Line l in Outline)
+                {
+                    l.Point1 += diff;
+                    l.Point2 += diff;
+                }
+            }
+        }
 
         public void Rotate(double rad)
         {
@@ -48,5 +62,20 @@ namespace RipOff
                 Outline[i].Point2 = Outline[i].Point2 + Centre;
             }
         }
+
+        public void Drive(double speed)
+        {
+
+            double p1y = Outline[0].Point1.Matrix.GetValue(2, 1);
+            double p1x = Outline[0].Point1.Matrix.GetValue(1, 1);
+
+            double rise = p1y - Outline[0].Point2.Matrix.GetValue(2,1);
+            double run = p1x - Outline[0].Point2.Matrix.GetValue(1,1);
+
+            double h = Math.Sqrt((rise * rise) + (run * run));
+            double factor = speed /h;
+
+            Centre -= new MatrixPoint(factor*run, factor*rise);
+         }
     }
 }
