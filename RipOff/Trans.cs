@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Drawing;
 
+    // Translates and scales cartesian coordinates into screen pixel locations
+    // Also maintains screen origin pixel location
     public class Trans
     {
         public int XScale { get; set; }

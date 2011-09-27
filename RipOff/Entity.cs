@@ -10,29 +10,18 @@ namespace RipOff
     using PaulMath;
     
     
-    public class Figure
+    public class Entity : IScreenEntity
     {
         MatrixPoint centre;
-        public Figure()
+
+        public Entity()
         {
             this.Outline = new List<Line>();
-            
-            //body
-            this.Outline.Add(new Line(new MatrixPoint(-10, -10), new MatrixPoint(-10, 10)));
-            this.Outline.Add(new Line(new MatrixPoint(-10, 10), new MatrixPoint(10, 10)));
-            this.Outline.Add(new Line(new MatrixPoint(10, 10), new MatrixPoint(10, -10)));
-            this.Outline.Add(new Line(new MatrixPoint(10, -10), new MatrixPoint(-10, -10)));
-
-            //gun
-            this.Outline.Add(new Line(new MatrixPoint(-1, 10), new MatrixPoint(-1, 15)));
-            this.Outline.Add(new Line(new MatrixPoint(-1, 15), new MatrixPoint(1, 15)));
-            this.Outline.Add(new Line(new MatrixPoint(1, 15), new MatrixPoint(1, 10)));
-
             this.centre = new MatrixPoint(0, 0);
-
         }
 
-        public List<Line> Outline { get; private set; }
+        public List<Line> Outline { get; set; }
+        
         public MatrixPoint Centre
         {
             get { return centre; }
@@ -40,6 +29,8 @@ namespace RipOff
             {
                 MatrixPoint diff = value - centre;
                 centre = value;
+
+                // our centre point has moved, update all lines accordingly.
                 foreach (Line l in Outline)
                 {
                     l.Point1 += diff;
@@ -48,11 +39,22 @@ namespace RipOff
             }
         }
 
+        public virtual void Update()
+        {
+        }
+
         public void Rotate(double rad)
         {
+            // this rotates points about (0,0)
+            // quick and nasty hack, shift item centre from current location to (0,0)
+            // rotate and then relocate back to original location.
+            // Will sort this when i get time
             double [] rot = {Math.Cos(rad) , -Math.Sin(rad), Math.Sin(rad), Math.Cos(rad)};
+            
             Matrix m = new Matrix(rot, 2, 2);
+            
             int len = this.Outline.Count;
+            
             for (int i = 0; i < len; ++i)
             {
                 Outline[i].Point1.Matrix = (m * (Outline[i].Point1 - Centre).Matrix);
@@ -63,19 +65,34 @@ namespace RipOff
             }
         }
 
-        public void Drive(double speed)
+        public void Move(double speed)
         {
-
+            // we want the speed to be constant whatever direction the item is travelling
+            // so when direction is non-orthogonal make the distance driven the length of the hypotenuse
+            // and determine the x,y values accordingly
+            // Each entities outline should be created such that Outline[0] is oriented front to back
+            // and items move by shifting the centre point in line with this.
             double p1y = Outline[0].Point1.Matrix.GetValue(2, 1);
             double p1x = Outline[0].Point1.Matrix.GetValue(1, 1);
 
-            double rise = p1y - Outline[0].Point2.Matrix.GetValue(2,1);
-            double run = p1x - Outline[0].Point2.Matrix.GetValue(1,1);
+            double p2y = Outline[0].Point2.Matrix.GetValue(2, 1);
+            double p2x = Outline[0].Point2.Matrix.GetValue(1, 1);
+
+            double rise = p1y - p2y;
+            double run = p1x - p2x;
 
             double h = Math.Sqrt((rise * rise) + (run * run));
             double factor = speed /h;
 
             Centre -= new MatrixPoint(factor*run, factor*rise);
          }
+
+        public void Draw(DrawParams dp)
+        {
+            foreach (Line l in this.Outline)
+            {
+                dp.Graphics.DrawLine(dp.Pen, dp.Trans.TransPoint(new Point(l.Point1.X, l.Point1.Y)), dp.Trans.TransPoint(new Point(l.Point2.X, l.Point2.Y)));
+            }
+        }
     }
 }
