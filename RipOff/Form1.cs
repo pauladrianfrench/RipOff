@@ -59,6 +59,7 @@ namespace RipOff
             ap.D = e.KeyChar == 'd';
             ap.J = e.KeyChar == 'j';
             ap.L = e.KeyChar == 'l';
+            ap.N = e.KeyChar == 'n';
 
             gameArea.KeyDown(ap);
         }
@@ -71,6 +72,7 @@ namespace RipOff
             ap.D = e.KeyData == Keys.D;
             ap.L = e.KeyData == Keys.L;
             ap.J = e.KeyData == Keys.J;
+            ap.N = e.KeyData == Keys.N;
             
             gameArea.KeyUp(ap);
         }

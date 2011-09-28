@@ -29,6 +29,11 @@ namespace RipOff
                 gameObjects[i].Draw(this.DrawParam);
             }
         }
+
+        public void AddGameObject(IScreenEntity obj)
+        {
+            gameObjects.Add(obj);
+        }
       
         public void Update()
         {

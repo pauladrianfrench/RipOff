@@ -39,6 +39,8 @@ namespace RipOff
             }
         }
 
+        public double Orientation { get; private set; }
+
         public virtual void Update()
         {
         }
@@ -63,6 +65,9 @@ namespace RipOff
                 Outline[i].Point2.Matrix = (m * (Outline[i].Point2 - Centre).Matrix);
                 Outline[i].Point2 = Outline[i].Point2 + Centre;
             }
+
+            // finally we'll keep track of our orientation so we don't have to calculate it
+            this.Orientation += rad;
         }
 
         public void Move(double speed)

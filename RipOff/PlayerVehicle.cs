@@ -13,6 +13,7 @@ namespace RipOff
         bool right;
         bool driveForward;
         bool driveBackward;
+        bool shoot;
 
         public PlayerVehicle(GameArea ga) 
             : base()
@@ -36,18 +37,26 @@ namespace RipOff
             right = false;
             driveForward = false;
             driveBackward = false;
+            shoot = false;
         }
 
         public override void Update()
         {
+            if (shoot)
+            {
+                Missile m = new Missile(parent, this.Orientation);
+                m.Centre = this.Centre;
+                parent.AddGameObject(m);
+            }
+
             if (driveForward)
             {
-                Move(10);
+                Move(5);
             }
 
             if (driveBackward)
             {
-                Move(-10);
+                Move(-5);
             }
 
             if (left)
@@ -59,6 +68,8 @@ namespace RipOff
             {
                 Rotate(-0.05);
             }
+
+           
         }
 
         public void KeyDown(ActionParams actions)
@@ -80,8 +91,13 @@ namespace RipOff
             {
                 driveBackward = true;
             }
+
+            if (actions.N)
+            {
+                shoot = true;
+            }
         }
-        
+
         public void KeyUp(ActionParams actions)
         {
             if (actions.A)
@@ -100,6 +116,11 @@ namespace RipOff
             if (actions.J)
             {
                 driveBackward = false;
+            }
+
+            if (actions.N)
+            {
+                shoot = false;
             }
         }
     }
