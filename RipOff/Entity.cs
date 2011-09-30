@@ -18,6 +18,7 @@ namespace RipOff
         {
             this.Outline = new List<Line>();
             this.centre = new MatrixPoint(0, 0);
+            this.Expired = false;
         }
 
         public List<Line> Outline { get; set; }
@@ -38,14 +39,14 @@ namespace RipOff
                 }
             }
         }
-
+        public bool Expired { get; set; }
         public double Orientation { get; private set; }
 
         public virtual void Update()
         {
         }
 
-        public void Rotate(double rad)
+        public virtual void Rotate(double rad)
         {
             // this rotates points about (0,0)
             // quick and nasty hack, shift item centre from current location to (0,0)
@@ -70,7 +71,7 @@ namespace RipOff
             this.Orientation += rad;
         }
 
-        public void Move(double speed)
+        public virtual void Move(double speed)
         {
             // we want the speed to be constant whatever direction the item is travelling
             // so when direction is non-orthogonal make the distance driven the length of the hypotenuse

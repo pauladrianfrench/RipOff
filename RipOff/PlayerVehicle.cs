@@ -14,6 +14,7 @@ namespace RipOff
         bool driveForward;
         bool driveBackward;
         bool shoot;
+        Line gunTip;
 
         public PlayerVehicle(GameArea ga) 
             : base()
@@ -26,13 +27,17 @@ namespace RipOff
             this.Outline.Add(new Line(new MatrixPoint(10, 10), new MatrixPoint(10, -10)));
             this.Outline.Add(new Line(new MatrixPoint(10, -10), new MatrixPoint(-10, -10)));
 
+            //gun tip, we'll use a zero length line to track the position of the gun tip
+            this.gunTip = new Line(new MatrixPoint(0, 15), new MatrixPoint(0, 15));
+            this.Outline.Add(gunTip);
+
             //gun
             this.Outline.Add(new Line(new MatrixPoint(-1, 10), new MatrixPoint(-1, 15)));
             this.Outline.Add(new Line(new MatrixPoint(-1, 15), new MatrixPoint(1, 15)));
             this.Outline.Add(new Line(new MatrixPoint(1, 15), new MatrixPoint(1, 10)));
 
             this.Centre = new MatrixPoint(0, 0);
-
+           
             left = false;
             right = false;
             driveForward = false;
@@ -44,8 +49,8 @@ namespace RipOff
         {
             if (shoot)
             {
-                Missile m = new Missile(parent, this.Orientation);
-                m.Centre = this.Centre;
+                Missile m = new Missile(parent, this.Orientation, 1000);
+                m.Centre = this.gunTip.Point1;
                 parent.AddGameObject(m);
             }
 
@@ -68,8 +73,6 @@ namespace RipOff
             {
                 Rotate(-0.05);
             }
-
-           
         }
 
         public void KeyDown(ActionParams actions)

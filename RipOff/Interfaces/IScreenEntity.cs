@@ -12,5 +12,6 @@ namespace RipOff
 
         void Update();
         void Draw(DrawParams dp);
+        bool Expired { get; set; }
     }
 }

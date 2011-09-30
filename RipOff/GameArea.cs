@@ -38,9 +38,16 @@ namespace RipOff
         public void Update()
         {
             int count = gameObjects.Count;
-            for (int i = 0; i < count; ++i)
+            for (int i = count-1; i >= 0; --i)
             {
-                gameObjects[i].Update();
+                if (gameObjects[i].Expired)
+                {
+                    gameObjects.RemoveAt(i);
+                }
+                else
+                {
+                    gameObjects[i].Update();
+                }
             }
         }
 
