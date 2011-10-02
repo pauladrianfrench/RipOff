@@ -22,12 +22,11 @@ namespace RipOff
             this.Trace = new Line(new MatrixPoint(0, -2), new MatrixPoint(0, 2));
 
             //body
-            this.Outline.Add(new Line(new MatrixPoint(-1, -2), new MatrixPoint(-1, 2)));
-            this.Outline.Add(new Line(new MatrixPoint(-1, 2), new MatrixPoint(1, 2)));
-            this.Outline.Add(new Line(new MatrixPoint(1, 2), new MatrixPoint(1, -2)));
-            this.Outline.Add(new Line(new MatrixPoint(1, -2), new MatrixPoint(-1, -2)));
+            this.Outline.Add(new Line(new MatrixPoint(0, -2), new MatrixPoint(0, 2)));
+            //this.Outline.Add(new Line(new MatrixPoint(-1, 2), new MatrixPoint(1, 2)));
+            //this.Outline.Add(new Line(new MatrixPoint(1, 2), new MatrixPoint(1, -2)));
+            //this.Outline.Add(new Line(new MatrixPoint(1, -2), new MatrixPoint(-1, -2)));
             
-
             Rotate(orientation);
 
             this.Range = range;
