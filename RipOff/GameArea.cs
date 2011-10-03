@@ -12,13 +12,9 @@ namespace RipOff
 
         public DrawParams DrawParam { get; set; }
 
-        public GameArea(DrawParams dp)
+        public GameArea()
         {
-            this.DrawParam = dp;
             gameObjects = new List<IScreenEntity>();
-
-            // by convention we'll make the player's tank the first item.
-            gameObjects.Add(new PlayerVehicle(this));
         }
 
         public void Draw()
@@ -32,7 +28,23 @@ namespace RipOff
 
         public void AddGameObject(IScreenEntity obj)
         {
-            gameObjects.Add(obj);
+            bool playerExists = false;
+            int count = gameObjects.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                if (gameObjects[i] is PlayerVehicle)
+                {
+                    playerExists = true;
+                }
+            }
+            if (!(obj is PlayerVehicle))
+            {
+                gameObjects.Add(obj);
+            }
+            else if (!playerExists)
+            {
+                gameObjects.Add(obj);
+            }
         }
       
         public void Update()
@@ -49,16 +61,43 @@ namespace RipOff
                     gameObjects[i].Update();
                 }
             }
+            CheckCollisions();
+        }
+
+        public void CheckCollisions()
+        {
+            int count = gameObjects.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                for (int j = i+1; j < count; ++j)
+                {
+                    gameObjects[i].DetectCollision(gameObjects[j]);
+                }
+            }
         }
 
         public void KeyDown(ActionParams actions)
         {
-            (gameObjects[0] as PlayerVehicle).KeyDown(actions);
+            int count = gameObjects.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                if (gameObjects[i] is PlayerVehicle)
+                {
+                    (gameObjects[i] as PlayerVehicle).KeyDown(actions);
+                }
+            }
         }
 
         public void KeyUp(ActionParams actions)
         {
-            (gameObjects[0] as PlayerVehicle).KeyUp(actions);
+            int count = gameObjects.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                if (gameObjects[i] is PlayerVehicle)
+                {
+                    (gameObjects[i] as PlayerVehicle).KeyUp(actions);
+                }
+            }
         }
     }
 }

@@ -50,8 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionParams.cs" />
+    <Compile Include="Box.cs" />
     <Compile Include="DrawParams.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="Explosion.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

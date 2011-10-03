@@ -8,27 +8,32 @@ namespace RipOff
 {
     public class PlayerVehicle : Entity, IPlayerVehicle
     {
-        GameArea parent;
         bool left;
         bool right;
         bool driveForward;
         bool driveBackward;
         bool shoot;
         Line gunTip;
+        List<Line> perimeter;
 
         public PlayerVehicle(GameArea ga) 
-            : base()
+            : base(ga)
         {
-            parent = ga;
-
             //body
             this.Outline.Add(new Line(new MatrixPoint(-10, -10), new MatrixPoint(-10, 10)));
             this.Outline.Add(new Line(new MatrixPoint(-10, 10), new MatrixPoint(10, 10)));
             this.Outline.Add(new Line(new MatrixPoint(10, 10), new MatrixPoint(10, -10)));
             this.Outline.Add(new Line(new MatrixPoint(10, -10), new MatrixPoint(-10, -10)));
 
+            perimeter = new List<Line>();
+
+            for (int i = 0; i < 4; i++)
+            {
+                perimeter.Add(Outline[i]);
+            }
+
             //gun tip, we'll use a zero length line to track the position of the gun tip
-            this.gunTip = new Line(new MatrixPoint(0, 15), new MatrixPoint(0, 15));
+            this.gunTip = new Line(new MatrixPoint(0, 20), new MatrixPoint(0, 20));
             this.Outline.Add(gunTip);
 
             //gun
@@ -73,6 +78,19 @@ namespace RipOff
             {
                 Rotate(-0.05);
             }
+        }
+
+        public override void Destroy()
+        {
+            Explosion exp = new Explosion(parent, 50);
+            exp.Centre = this.Centre;
+            parent.AddGameObject(exp);
+            base.Destroy();
+        }
+
+        public override List<Line> GetPerimeter()
+        {
+            return perimeter;
         }
 
         public void KeyDown(ActionParams actions)

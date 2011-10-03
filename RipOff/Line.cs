@@ -117,7 +117,7 @@ namespace RipOff
             double line_c = line.point1.Yd - line_m * line.point1.Xd;
             double line_y = line_m * vert.point1.Xd + line_c;
 
-            if (line_y >= vert.LowPoint.Yd && line_y <= vert.HighPoint.Yd)
+            if (line_y >= vert.LowPoint.Yd && line_y <= vert.HighPoint.Yd && vert.Point1.Xd >= line.LeftPoint.Xd && vert.Point1.Xd <= line.RightPoint.Xd)
             {
                 return true;
             }

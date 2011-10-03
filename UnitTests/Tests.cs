@@ -34,5 +34,22 @@
             Assert.True(line6.Intersects(line7), "line6.Intersects(line7)");
             Assert.True(line7.Intersects(line6), "line7.Intersects(line6)");
         }
+
+        [Test]
+        public void TestCollisionDetection()
+        {    
+            GameArea gameArea = new GameArea();
+
+            PlayerVehicle veh1 = new PlayerVehicle(gameArea);
+            gameArea.AddGameObject(veh1);
+
+            Box box = new Box(gameArea);
+            
+            gameArea.AddGameObject(box);
+            Assert.True(box.DetectCollision(veh1), "Collision detection false negative");
+
+            box.Centre = new MatrixPoint(-100, -100);
+            Assert.False(box.DetectCollision(veh1), "Collision detection false positive");
+        }
     }
 }

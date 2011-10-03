@@ -31,7 +31,35 @@ namespace RipOff
             time.Interval = 25;
             time.Tick += UpdateGameArea;
 
-            gameArea = new GameArea(dp);
+            gameArea = new GameArea();
+            gameArea.DrawParam = dp;
+
+            PlayerVehicle veh1 = new PlayerVehicle(gameArea);
+            gameArea.AddGameObject(veh1);
+
+            Box box1 = new Box(gameArea);
+            box1.Centre = new MatrixPoint(-100, -100);
+            gameArea.AddGameObject(box1);
+
+            Box box2 = new Box(gameArea);
+            box2.Centre = new MatrixPoint(-100, 100);
+            gameArea.AddGameObject(box2);
+
+            Box box3 = new Box(gameArea);
+            box3.Centre = new MatrixPoint(100, 100);
+            gameArea.AddGameObject(box3);
+
+            Box box4 = new Box(gameArea);
+            box4.Centre = new MatrixPoint(100, -100);
+            gameArea.AddGameObject(box4);
+
+            Box box5 = new Box(gameArea);
+            box5.Centre = new MatrixPoint(200, -70);
+            gameArea.AddGameObject(box5);
+
+            Box box6 = new Box(gameArea);
+            box6.Centre = new MatrixPoint(200, -150);
+            gameArea.AddGameObject(box6);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -75,6 +103,41 @@ namespace RipOff
             ap.N = e.KeyData == Keys.N;
             
             gameArea.KeyUp(ap);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            PlayerVehicle veh1 = new PlayerVehicle(gameArea);
+            gameArea.AddGameObject(veh1);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Random rand = new Random();
+
+            Box box1 = new Box(gameArea);
+            box1.Centre = new MatrixPoint(-100 + rand.NextDouble() * 100, -100 + rand.NextDouble() * 100);
+            gameArea.AddGameObject(box1);
+
+            Box box2 = new Box(gameArea);
+            box2.Centre = new MatrixPoint(-100 + rand.NextDouble() * 100, 100 + rand.NextDouble() * 100);
+            gameArea.AddGameObject(box2);
+
+            Box box3 = new Box(gameArea);
+            box3.Centre = new MatrixPoint(100, 100 + rand.NextDouble() * 100 + rand.NextDouble() * 100);
+            gameArea.AddGameObject(box3);
+
+            Box box4 = new Box(gameArea);
+            box4.Centre = new MatrixPoint(100 + rand.NextDouble() * 100, -100 + rand.NextDouble() * 100);
+            gameArea.AddGameObject(box4);
+
+            Box box5 = new Box(gameArea);
+            box5.Centre = new MatrixPoint(200, -70 + rand.NextDouble() * 100 + rand.NextDouble() * 100);
+            gameArea.AddGameObject(box5);
+
+            Box box6 = new Box(gameArea);
+            box6.Centre = new MatrixPoint(200 + rand.NextDouble() * 100, -150 + rand.NextDouble() * 100);
+            gameArea.AddGameObject(box6);
         }
     }
 }

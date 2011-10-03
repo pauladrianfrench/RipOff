@@ -7,7 +7,6 @@ namespace RipOff
 {
     public class Missile : Entity, IScreenEntity
     {
-        GameArea parent;
         double distanceTravelled;
 
         double Range { get; set; }
@@ -15,10 +14,8 @@ namespace RipOff
         public Line Trace { get; set; }
 
         public Missile(GameArea ga, double orientation, double range)
-            : base()
+            : base(ga)
         {
-            parent = ga;
-
             this.Trace = new Line(new MatrixPoint(0, -2), new MatrixPoint(0, 2));
 
             //body

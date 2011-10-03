@@ -13,9 +13,11 @@ namespace RipOff
     public class Entity : IScreenEntity
     {
         MatrixPoint centre;
+        protected GameArea parent;
 
-        public Entity()
+        public Entity(GameArea ga)
         {
+            parent = ga;
             this.Outline = new List<Line>();
             this.centre = new MatrixPoint(0, 0);
             this.Expired = false;
@@ -92,6 +94,44 @@ namespace RipOff
 
             Centre -= new MatrixPoint(factor*run, factor*rise);
          }
+
+        public virtual bool DetectCollision(IScreenEntity other)
+        {
+            if (this is Explosion || other is Explosion)
+            {
+                return false;
+            }
+
+            List<Line> myOutline = this.GetPerimeter();
+            List<Line> otherOutline = other.GetPerimeter();
+
+            int myCount = myOutline.Count;
+            int otherCount = otherOutline.Count;
+
+            for (int i = 0; i < myCount; i++)
+            {
+                for (int j = 0; j < otherCount; j++)
+                {
+                    if (myOutline[i].Intersects(otherOutline[j]))
+                    {
+                        this.Destroy();
+                        other.Destroy();
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public virtual List<Line> GetPerimeter()
+        {
+            return Outline;
+        }
+
+        public virtual void Destroy()
+        {
+            this.Expired = true;
+        }
 
         public void Draw(DrawParams dp)
         {
