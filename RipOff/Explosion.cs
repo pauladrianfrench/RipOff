@@ -49,5 +49,10 @@ namespace RipOff
                 parent.AddGameObject(exp1);
             }
         }
+
+        public override ProximityResult DetectProximity(IScreenEntity other)
+        {
+            return ProximityResult.Missed;
+        }
     }
 }

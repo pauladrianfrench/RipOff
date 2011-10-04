@@ -22,7 +22,7 @@ namespace RipOff
 
             dp.Graphics = this.CreateGraphics();
             dp.Graphics.Clear(Color.White);
-            dp.Trans = new Trans { XScale = 1, YScale = 1, Origin = new Point(500, 250) };
+            dp.Trans = new Trans { XScale = 1, YScale = 1, Origin = new Point(510, 315) };
             dp.Pen = new Pen(Color.Blue);
             dp.FillBrush = new SolidBrush(Color.GreenYellow);
 
@@ -34,9 +34,16 @@ namespace RipOff
             gameArea = new GameArea();
             gameArea.DrawParam = dp;
 
+            GameAreaBorder gab = new GameAreaBorder(gameArea);
+            gameArea.AddGameObject(gab);
+
             PlayerVehicle veh1 = new PlayerVehicle(gameArea);
             gameArea.AddGameObject(veh1);
 
+            EnemyTank et1 = new EnemyTank(gameArea);
+            et1.Centre = new MatrixPoint(-400, 0);
+            gameArea.AddGameObject(et1);
+            
             Box box1 = new Box(gameArea);
             box1.Centre = new MatrixPoint(-100, -100);
             gameArea.AddGameObject(box1);

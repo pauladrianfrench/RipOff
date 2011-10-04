@@ -31,11 +31,37 @@
 
         public static MatrixPoint operator -(MatrixPoint lhs, MatrixPoint rhs)
         {
-            return new MatrixPoint
-                        (
-                            lhs.Matrix.GetValue(1, 1) - rhs.Matrix.GetValue(1, 1),
-                            lhs.Matrix.GetValue(2, 1) - rhs.Matrix.GetValue(2, 1)
-                        );
+            return new MatrixPoint(lhs.Matrix.GetValue(1, 1) - rhs.Matrix.GetValue(1, 1),
+                                   lhs.Matrix.GetValue(2, 1) - rhs.Matrix.GetValue(2, 1));
+        }
+
+        public static double DistanceBetween(MatrixPoint p1, MatrixPoint p2)
+        {
+            double rise = p2.Yd - p1.Yd;
+            double run = p2.Xd - p1.Xd;
+            return Math.Sqrt(rise * rise + run * run);
+        }
+
+        public static double OrientationBetween(MatrixPoint p1, MatrixPoint p2)
+        {
+            double p1x = p1.Xd;
+            double p1y = p1.Yd;
+
+            double p2x = p2.Xd;
+            double p2y = p2.Yd;
+
+            double rise = p2y - p1y;
+            double run = p2x - p1x;
+
+
+            if (rise != 0)
+            {
+                return Math.Atan(run / rise);
+            }
+            else
+            {
+                return -9;
+            }
         }
     }
 }

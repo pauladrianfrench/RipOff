@@ -46,10 +46,37 @@
             Box box = new Box(gameArea);
             
             gameArea.AddGameObject(box);
-            Assert.True(box.DetectCollision(veh1), "Collision detection false negative");
+            Assert.AreEqual(box.DetectProximity(veh1), ProximityResult.Hit, "Collision detection false negative");
 
-            box.Centre = new MatrixPoint(-100, -100);
-            Assert.False(box.DetectCollision(veh1), "Collision detection false positive");
+            box.Centre = new MatrixPoint(-150, -150);
+            Assert.AreEqual(box.DetectProximity(veh1), ProximityResult.Missed,"Collision detection false positive");
+        }
+
+        [Test]
+        public void TestOrientationCalcs()
+        {
+            MatrixPoint centre = new MatrixPoint(0, 0);
+
+            MatrixPoint p1 = new MatrixPoint(4, 5);
+            MatrixPoint p2 = new MatrixPoint(5, -4);
+            MatrixPoint p3 = new MatrixPoint(-4, -5);
+            MatrixPoint p4 = new MatrixPoint(-5, 4);
+
+            MatrixPoint p5 = new MatrixPoint(0.1, 4);
+            MatrixPoint p6 = new MatrixPoint(0.1, -4);
+            MatrixPoint p7 = new MatrixPoint(-0.1, -4);
+            MatrixPoint p8 = new MatrixPoint(-0.1, 4);
+
+
+            double res1 = MatrixPoint.OrientationBetween(centre, p1);
+            double res2 = MatrixPoint.OrientationBetween(centre, p2);
+            double res3 = MatrixPoint.OrientationBetween(centre, p3);
+            double res4 = MatrixPoint.OrientationBetween(centre, p4);
+
+            double res5 = MatrixPoint.OrientationBetween(centre, p5);
+            double res6 = MatrixPoint.OrientationBetween(centre, p6);
+            double res7 = MatrixPoint.OrientationBetween(centre, p7);
+            double res8 = MatrixPoint.OrientationBetween(centre, p8);
         }
     }
 }

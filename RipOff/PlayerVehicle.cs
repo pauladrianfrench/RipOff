@@ -54,8 +54,7 @@ namespace RipOff
         {
             if (shoot)
             {
-                Missile m = new Missile(parent, this.Orientation, 1000);
-                m.Centre = this.gunTip.Point1;
+                Missile m = new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
                 parent.AddGameObject(m);
             }
 
@@ -143,6 +142,11 @@ namespace RipOff
             {
                 shoot = false;
             }
+        }
+
+        public override ProximityResult DetectProximity(IScreenEntity other)
+        {
+            return base.DetectProximity(other);
         }
     }
 }

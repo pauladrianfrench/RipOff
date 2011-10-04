@@ -9,23 +9,23 @@ namespace RipOff
     using System.Drawing;
     using PaulMath;
     
-    
     public class Entity : IScreenEntity
     {
-        MatrixPoint centre;
+        protected MatrixPoint centre;
         protected GameArea parent;
 
         public Entity(GameArea ga)
         {
-            parent = ga;
+            this.parent = ga;
             this.Outline = new List<Line>();
             this.centre = new MatrixPoint(0, 0);
             this.Expired = false;
+            this.Orientation = 0;
         }
 
         public List<Line> Outline { get; set; }
         
-        public MatrixPoint Centre
+        public virtual MatrixPoint Centre
         {
             get { return centre; }
             set
@@ -95,13 +95,8 @@ namespace RipOff
             Centre -= new MatrixPoint(factor*run, factor*rise);
          }
 
-        public virtual bool DetectCollision(IScreenEntity other)
+        public virtual ProximityResult DetectProximity(IScreenEntity other)
         {
-            if (this is Explosion || other is Explosion)
-            {
-                return false;
-            }
-
             List<Line> myOutline = this.GetPerimeter();
             List<Line> otherOutline = other.GetPerimeter();
 
@@ -116,11 +111,11 @@ namespace RipOff
                     {
                         this.Destroy();
                         other.Destroy();
-                        return true;
+                        return ProximityResult.Hit;
                     }
                 }
             }
-            return false;
+            return ProximityResult.Missed;
         }
 
         public virtual List<Line> GetPerimeter()

@@ -9,11 +9,11 @@ namespace RipOff
     public interface IScreenEntity
     {
         List<Line> Outline { get; set; }
-
+        MatrixPoint Centre { get; set; }
         void Update();
         void Draw(DrawParams dp);
         bool Expired { get; set; }
-        bool DetectCollision(IScreenEntity other);
+        ProximityResult DetectProximity(IScreenEntity other);
         void Destroy();
         List<Line> GetPerimeter();
     }

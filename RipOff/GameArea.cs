@@ -69,9 +69,12 @@ namespace RipOff
             int count = gameObjects.Count;
             for (int i = 0; i < count; ++i)
             {
-                for (int j = i+1; j < count; ++j)
+                for (int j = 0; j < count; ++j)
                 {
-                    gameObjects[i].DetectCollision(gameObjects[j]);
+                    if (i != j)
+                    {
+                        gameObjects[i].DetectProximity(gameObjects[j]);
+                    }
                 }
             }
         }
