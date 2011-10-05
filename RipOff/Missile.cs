@@ -13,13 +13,13 @@ namespace RipOff
 
         MatrixPoint trace;
 
-        public Missile(GameArea ga, double orientation, MatrixPoint centre, double range)
+        public Missile(GameArea ga, Angle orientation, MatrixPoint centre, double range)
             : base(ga)
         {
             //body
             this.Outline.Add(new Line(new MatrixPoint(0, -2), new MatrixPoint(0, 2)));
            
-            Rotate(orientation);
+            Rotate(orientation.Radians);
             Centre = centre;
 
             this.Range = range;

@@ -20,7 +20,7 @@ namespace RipOff
             this.Outline = new List<Line>();
             this.centre = new MatrixPoint(0, 0);
             this.Expired = false;
-            this.Orientation = 0;
+            this.Orientation = new Angle(0.0);
         }
 
         public List<Line> Outline { get; set; }
@@ -42,7 +42,7 @@ namespace RipOff
             }
         }
         public bool Expired { get; set; }
-        public double Orientation { get; private set; }
+        public Angle Orientation { get; private set; }
 
         public virtual void Update()
         {

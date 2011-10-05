@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionParams.cs" />
+    <Compile Include="Angle.cs" />
     <Compile Include="Box.cs" />
     <Compile Include="DrawParams.cs" />
     <Compile Include="EnemyTank.cs" />

@@ -42,26 +42,52 @@
             return Math.Sqrt(rise * rise + run * run);
         }
 
-        public static double OrientationBetween(MatrixPoint p1, MatrixPoint p2)
+        public static Angle OrientationBetween(MatrixPoint p1, MatrixPoint p2)
         {
-            double p1x = p1.Xd;
-            double p1y = p1.Yd;
+            MatrixPoint p = p2 - p1;
+           
+            double rise = p.Yd;
+            double run = p.Xd;
 
-            double p2x = p2.Xd;
-            double p2y = p2.Yd;
-
-            double rise = p2y - p1y;
-            double run = p2x - p1x;
-
-
-            if (rise != 0)
+            if (rise != 0.0 && run != 0.0)
             {
-                return Math.Atan(run / rise);
+                if (rise > 0 && run > 0)
+                {
+                    return new Angle(Math.Atan(run / rise));
+                }
+                else if (rise < 0 && run > 0)
+                {
+                    return new Angle(Math.PI + Math.Atan(run / rise));
+                }
+                else if (rise < 0 && run < 0)
+                {
+                    return new Angle(Math.PI + Math.Atan(run / rise));
+                }
+                else if (rise > 0 && run < 0)
+                {
+                    return new Angle((2 * Math.PI) + Math.Atan(run / rise));
+                }
             }
             else
             {
-                return -9;
+                if (rise == 0 && run > 0)
+                {
+                    return new Angle(Math.PI/2);
+                }
+                else if (rise < 0 && run == 0)
+                {
+                    return new Angle(Math.PI);
+                }
+                else if (rise == 0 && run < 0)
+                {
+                    return new Angle((Math.PI / 2) + Math.PI);
+                }
+                else if (rise > 0 && run == 0)
+                {
+                    return new Angle(0);
+                }
             }
+            return new Angle();
         }
     }
 }
