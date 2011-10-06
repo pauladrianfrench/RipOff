@@ -146,5 +146,12 @@ namespace RipOff
             box6.Centre = new MatrixPoint(200 + rand.NextDouble() * 100, -150 + rand.NextDouble() * 100);
             gameArea.AddGameObject(box6);
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            EnemyTank et1 = new EnemyTank(gameArea);
+            et1.Centre = new MatrixPoint(-400, 0);
+            gameArea.AddGameObject(et1);
+        }
     }
 }

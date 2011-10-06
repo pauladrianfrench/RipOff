@@ -36,6 +36,7 @@
                 Angle relativeOrientation = this.Orientation + entityHeading;
 
                 this.Rotate(-relativeOrientation.Radians);
+                this.Move(4);
                     
                 return ProximityResult.Ahead;
                
