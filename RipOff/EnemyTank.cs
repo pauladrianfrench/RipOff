@@ -27,24 +27,18 @@
 
         public override ProximityResult DetectProximity(IScreenEntity other)
         {
-            if (other is PlayerVehicle || other is Box || other is EnemyTank)
+            if (other is PlayerVehicle)
             {
-                if (MatrixPoint.DistanceBetween(this.Centre, other.Centre) < 150)
-                {
-                    // under construction!!!
-                    Angle entityHeading = MatrixPoint.OrientationBetween(this.Centre, other.Centre);
-                    if (entityHeading.Radians > 7 * Math.PI / 4 && entityHeading.Radians <= Math.PI / 4)
-                    {
-                        return ProximityResult.Ahead;
-                    }
-                    else if (entityHeading.Radians > Math.PI / 4 && entityHeading.Radians <= 3 * Math.PI / 4)
-                    {
-                        return ProximityResult.Ahead;
-                    }
+                
+                // under construction!!!
+                Angle entityHeading = MatrixPoint.OrientationBetween(this.Centre, other.Centre);
 
+                Angle relativeOrientation = this.Orientation + entityHeading;
 
-                    return ProximityResult.Ahead;
-                }
+                this.Rotate(-relativeOrientation.Radians);
+                    
+                return ProximityResult.Ahead;
+               
             }
             return base.DetectProximity(other);
         }
