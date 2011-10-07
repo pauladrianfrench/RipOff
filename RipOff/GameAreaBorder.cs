@@ -20,10 +20,5 @@
         {
             // do nothing, you can't destroy the border
         }
-
-        public override ProximityResult DetectProximity(IScreenEntity other)
-        {
-            return ProximityResult.Missed;
-        }
     }
 }

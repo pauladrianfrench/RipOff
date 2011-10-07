@@ -5,8 +5,10 @@
     using System.Linq;
     using System.Text;
 
-    public class EnemyTank : Entity
+    public class EnemyTank : MovingEntity
     {
+        public IEntity Target { get; set; }
+
         public EnemyTank(GameArea ga)
             : base(ga)
         {
@@ -25,23 +27,75 @@
             base.Destroy();
         }
 
-        public override ProximityResult DetectProximity(IScreenEntity other)
+        public override ProximityResult DetectProximity(IEntity other)
         {
-            if (other is PlayerVehicle)
+            ProximityResult res = base.DetectProximity(other);
+
+            if (res.Collision)
             {
-                
-                // under construction!!!
-                Angle entityHeading = MatrixPoint.OrientationBetween(this.Centre, other.Centre);
-
-                Angle relativeOrientation = this.Orientation + entityHeading;
-
-                this.Rotate(-relativeOrientation.Radians);
-                this.Move(4);
-                    
-                return ProximityResult.Ahead;
-               
+                this.Destroy();
+                other.Destroy();
+                return res;
             }
-            return base.DetectProximity(other);
+            else
+            {
+                if (other is Box)
+                {
+                    if (res.Distance < 150)
+                    {
+                        if (res.GetHeading(this.Orientation) == Heading.Ahead)
+                        {
+                            this.Rotate(-0.05);
+                            this.Move(2);
+                        }
+                        else if (res.GetHeading(this.Orientation) == Heading.FineAheadLeft)
+                        {
+                            this.Rotate(-0.05);
+                            this.Move(3);
+                        }
+                        else if (res.GetHeading(this.Orientation) == Heading.FineAheadRight)
+                        {
+                            this.Rotate(0.05);
+                            this.Move(3);
+                        }
+                        else if (res.GetHeading(this.Orientation) == Heading.AheadLeft)
+                        {
+                            this.Rotate(-0.05);
+                            this.Move(4);
+                        }
+                        else if (res.GetHeading(this.Orientation) == Heading.AheadRight)
+                        {
+                            this.Rotate(0.05);
+                            this.Move(4);
+                        }
+                    }
+                }
+                else if (Target != null && other == Target)
+                {
+                    SeekTarget(res);
+                }
+            }
+
+            return res;
+        }
+
+        private void SeekTarget(ProximityResult target)
+        {
+            Angle relativeOrientation = this.Orientation + target.Bearing;
+
+            if (Math.Round(relativeOrientation.Radians) != Math.Round(0.0, 9))
+            {
+                if (relativeOrientation.Radians > Math.PI)
+                {
+                    this.Rotate(0.05);
+                }
+                else
+                {
+                    this.Rotate(-0.05);
+                }
+            }
+
+            this.Move(4);
         }
     }
 }

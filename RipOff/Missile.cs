@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RipOff
 {
-    public class Missile : Entity, IScreenEntity
+    public class Missile : MovingEntity
     {
         double distanceTravelled;
 
@@ -53,13 +53,20 @@ namespace RipOff
             return per;
         }
 
-        public override ProximityResult DetectProximity(IScreenEntity other)
+        public override ProximityResult DetectProximity(IEntity other)
         {
-            if (other is Missile || other is Explosion)
+            if (!(other is Missile) && !(other is Explosion))
             {
-                return ProximityResult.Missed;
+                ProximityResult res = base.DetectProximity(other);
+                if (res.Collision)
+                {
+                    this.Destroy();
+                    other.Destroy();
+                    return res;
+                }
+                return res;
             }
-            return base.DetectProximity(other);
+            return new ProximityResult { Collision = false, Entity = other };
         }
     }
 }

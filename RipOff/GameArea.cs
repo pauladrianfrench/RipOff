@@ -8,13 +8,13 @@ namespace RipOff
 {
     public class GameArea
     {
-        List<IScreenEntity> gameObjects;
+        List<IEntity> gameObjects;
 
         public DrawParams DrawParam { get; set; }
 
         public GameArea()
         {
-            gameObjects = new List<IScreenEntity>();
+            gameObjects = new List<IEntity>();
         }
 
         public void Draw()
@@ -26,7 +26,7 @@ namespace RipOff
             }
         }
 
-        public void AddGameObject(IScreenEntity obj)
+        public void AddGameObject(IEntity obj)
         {
             bool playerExists = false;
             int count = gameObjects.Count;
@@ -35,6 +35,10 @@ namespace RipOff
                 if (gameObjects[i] is PlayerVehicle)
                 {
                     playerExists = true;
+                    if (obj is EnemyTank)
+                    {
+                        (obj as EnemyTank).Target = gameObjects[i];
+                    }
                 }
             }
             if (!(obj is PlayerVehicle))
@@ -69,11 +73,14 @@ namespace RipOff
             int count = gameObjects.Count;
             for (int i = 0; i < count; ++i)
             {
-                for (int j = 0; j < count; ++j)
+                if (gameObjects[i] is IMovingEntity)
                 {
-                    if (i != j)
+                    for (int j = 0; j < count; ++j)
                     {
-                        gameObjects[i].DetectProximity(gameObjects[j]);
+                        if (i != j)
+                        {
+                            (gameObjects[i] as IMovingEntity).DetectProximity(gameObjects[j]);
+                        }
                     }
                 }
             }

@@ -34,14 +34,13 @@ namespace RipOff
             gameArea = new GameArea();
             gameArea.DrawParam = dp;
 
-            GameAreaBorder gab = new GameAreaBorder(gameArea);
-            gameArea.AddGameObject(gab);
-
             PlayerVehicle veh1 = new PlayerVehicle(gameArea);
             gameArea.AddGameObject(veh1);
 
             EnemyTank et1 = new EnemyTank(gameArea);
             et1.Centre = new MatrixPoint(-400, 0);
+            et1.Target = veh1;
+
             gameArea.AddGameObject(et1);
             
             Box box1 = new Box(gameArea);
@@ -151,6 +150,7 @@ namespace RipOff
         {
             EnemyTank et1 = new EnemyTank(gameArea);
             et1.Centre = new MatrixPoint(-400, 0);
+
             gameArea.AddGameObject(et1);
         }
     }

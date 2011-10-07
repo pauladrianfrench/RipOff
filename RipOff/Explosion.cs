@@ -35,7 +35,6 @@ namespace RipOff
             base.Update();
             ageTicks++;
 
-                  
             if (ageTicks > lifeSpan)
             {
                 this.Expired = true;
@@ -48,11 +47,6 @@ namespace RipOff
                 exp1.spawn = false;
                 parent.AddGameObject(exp1);
             }
-        }
-
-        public override ProximityResult DetectProximity(IScreenEntity other)
-        {
-            return ProximityResult.Missed;
         }
     }
 }

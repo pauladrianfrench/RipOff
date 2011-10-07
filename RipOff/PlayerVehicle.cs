@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace RipOff
 {
-    public class PlayerVehicle : Entity, IPlayerVehicle
+    public class PlayerVehicle : MovingEntity, IPlayerVehicle
     {
         bool left;
         bool right;
@@ -144,9 +144,17 @@ namespace RipOff
             }
         }
 
-        public override ProximityResult DetectProximity(IScreenEntity other)
+        public override ProximityResult DetectProximity(IEntity other)
         {
-            return base.DetectProximity(other);
+            ProximityResult res = base.DetectProximity(other);
+
+            if (res.Collision)
+            {
+                this.Destroy();
+                other.Destroy();
+                return res;
+            }
+            return res;
         }
     }
 }

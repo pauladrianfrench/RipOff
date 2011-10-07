@@ -64,13 +64,16 @@
     </Compile>
     <Compile Include="GameArea.cs" />
     <Compile Include="GameAreaBorder.cs" />
+    <Compile Include="Interfaces\IMovingEntity.cs" />
     <Compile Include="Interfaces\IPlayerVehicle.cs" />
-    <Compile Include="Interfaces\IScreenEntity.cs" />
+    <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="MatrixPoint.cs" />
     <Compile Include="Missile.cs" />
+    <Compile Include="MovingEntity.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Heading.cs" />
     <Compile Include="ProximityResult.cs" />
     <Compile Include="Trans.cs" />
     <Compile Include="PlayerVehicle.cs" />
