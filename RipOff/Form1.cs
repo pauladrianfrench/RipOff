@@ -38,43 +38,40 @@ namespace RipOff
             cell1.Centre = new MatrixPoint(150, 150);
             gameArea.AddGameObject(cell1);
 
-            IMission miss1 = new Mission { Target = cell1, Complete = false, EndPoint = new MatrixPoint(0, 700) };
-            gameArea.CollectMission(miss1);
-
             PlayerVehicle veh1 = new PlayerVehicle(gameArea);
             gameArea.AddGameObject(veh1);
 
+            IMission miss1 = new Mission { Target = cell1, Complete = false, EndPoint = new Entity(gameArea) { Centre = new MatrixPoint(300, -500) } };
+            gameArea.CollectMission(miss1);
+
             EnemyTank et1 = new EnemyTank(gameArea);
             et1.Centre = new MatrixPoint(-400, 0);
-            
 
             gameArea.AddGameObject(et1);
 
-          
-            
-            //Box box1 = new Box(gameArea);
-            //box1.Centre = new MatrixPoint(-100, -100);
-            //gameArea.AddGameObject(box1);
+            Box box1 = new Box(gameArea);
+            box1.Centre = new MatrixPoint(-100, -100);
+            gameArea.AddGameObject(box1);
 
-            //Box box2 = new Box(gameArea);
-            //box2.Centre = new MatrixPoint(-100, 100);
-            //gameArea.AddGameObject(box2);
+            Box box2 = new Box(gameArea);
+            box2.Centre = new MatrixPoint(-100, 100);
+            gameArea.AddGameObject(box2);
 
-            //Box box3 = new Box(gameArea);
-            //box3.Centre = new MatrixPoint(100, 100);
-            //gameArea.AddGameObject(box3);
+            Box box3 = new Box(gameArea);
+            box3.Centre = new MatrixPoint(100, 100);
+            gameArea.AddGameObject(box3);
 
-            //Box box4 = new Box(gameArea);
-            //box4.Centre = new MatrixPoint(100, -100);
-            //gameArea.AddGameObject(box4);
+            Box box4 = new Box(gameArea);
+            box4.Centre = new MatrixPoint(100, -100);
+            gameArea.AddGameObject(box4);
 
-            //Box box5 = new Box(gameArea);
-            //box5.Centre = new MatrixPoint(200, -70);
-            //gameArea.AddGameObject(box5);
+            Box box5 = new Box(gameArea);
+            box5.Centre = new MatrixPoint(200, -70);
+            gameArea.AddGameObject(box5);
 
-            //Box box6 = new Box(gameArea);
-            //box6.Centre = new MatrixPoint(200, -150);
-            //gameArea.AddGameObject(box6);
+            Box box6 = new Box(gameArea);
+            box6.Centre = new MatrixPoint(200, -150);
+            gameArea.AddGameObject(box6);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -157,6 +154,7 @@ namespace RipOff
 
         private void button3_Click(object sender, EventArgs e)
         {
+
             EnemyTank et1 = new EnemyTank(gameArea);
             et1.Centre = new MatrixPoint(-400, 0);
 

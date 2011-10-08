@@ -7,8 +7,8 @@
 
     public interface IMission
     {
-        Entity Target { get; set; }
-        MatrixPoint EndPoint { get; set; }
+        IEntity Target { get; set; }
+        IEntity EndPoint { get; set; }
         bool Complete { get; set; }
     }
 }

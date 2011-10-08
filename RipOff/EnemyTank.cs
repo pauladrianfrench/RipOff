@@ -10,6 +10,8 @@
         public IMission Mission { get; set; }
         double nextMove;
         double nextRotate;
+        IEntity target;
+        IEntity towedObject;
 
         public EnemyTank(GameArea ga)
             : base(ga)
@@ -24,6 +26,64 @@
             nextRotate = 0.0;
 
             Mission = ga.GetNextMission();
+            target = Mission.Target;
+        }
+
+        public override MatrixPoint Centre
+        {
+            get { return base.Centre; }
+            set
+            {
+                if (towedObject != null)
+                {
+                    
+                    MatrixPoint initialCentre = this.Centre;
+                    double initialDistance = MatrixPoint.DistanceBetween(this.Centre, towedObject.Centre);
+
+                    base.Centre = value;
+                    Angle newOrientation = MatrixPoint.OrientationBetween(this.Centre, towedObject.Centre);
+                    MatrixPoint diff = new MatrixPoint(0,0);
+
+                    if (newOrientation.Radians == 0.0)
+                    {
+                        diff = new MatrixPoint(0, initialDistance);
+                    }
+                    else if (newOrientation.Radians < Math.PI / 2)
+                    {
+                        diff = new MatrixPoint(Math.Cos(newOrientation.Radians) * initialDistance, Math.Sin(newOrientation.Radians) * initialDistance);
+                    }
+                    else if (newOrientation.Radians == Math.PI/2)
+                    {
+                        diff = new MatrixPoint(initialDistance, 0);
+                    }
+                    else if (newOrientation.Radians > Math.PI / 2 && newOrientation.Radians < Math.PI)
+                    {
+                        diff = new MatrixPoint((Math.Cos(newOrientation.Radians - Math.PI/2)) * initialDistance, -Math.Sin(newOrientation.Radians - Math.PI/2) * initialDistance);
+                    }
+                    else if (newOrientation.Radians == Math.PI)
+                    {
+                        diff = new MatrixPoint(0, -initialDistance);
+                    }
+                    else if (newOrientation.Radians > Math.PI && newOrientation.Radians < 3* Math.PI / 2)
+                    {
+                        diff = new MatrixPoint(-Math.Cos(newOrientation.Radians - Math.PI) * initialDistance, -Math.Sin(newOrientation.Radians - Math.PI) * initialDistance);
+                    }
+                    else if (newOrientation.Radians == 3 * Math.PI / 2)
+                    {
+                        diff = new MatrixPoint(-initialDistance, 0);
+                    }
+                    else if (newOrientation.Radians > 3* Math.PI / 2 && newOrientation.Radians < 2 * Math.PI)
+                    {
+                        diff = new MatrixPoint(-Math.Cos(newOrientation.Radians - 3*Math.PI/2) * initialDistance, Math.Sin(newOrientation.Radians - 3*Math.PI/2) * initialDistance);
+                    }
+                    
+                    towedObject.Centre = this.Centre + diff;
+                }
+                else
+                {
+                    base.Centre = value;
+                }
+            }
         }
 
         public override void Destroy()
@@ -64,8 +124,6 @@
 
         public override ProximityResult DetectProximity(IEntity other)
         {
-            
-
             ProximityResult res = base.DetectProximity(other);
 
             if (res.Collision)
@@ -77,14 +135,14 @@
             else
             {
                 // collision avoidance
-                if (other is Box || other is EnemyTank || other is Explosion)
+                if (other != target)
                 {
                     if (res.Distance < 130)
                     {
                         if (res.GetHeading(this.Orientation) == Heading.Ahead)
                         {
-                          nextRotate = -0.1;
-                          nextMove = 0;
+                            nextRotate = -0.1;
+                            nextMove = 0;
                         }
                         else if (res.GetHeading(this.Orientation) == Heading.FineAheadLeft)
                         {
@@ -118,7 +176,7 @@
                         }
                     }
                 }
-                else if (Mission.Target != null && other == Mission.Target)
+                else
                 {
                     SeekTarget(res);
                 }
@@ -131,12 +189,11 @@
         {
             Angle relativeOrientation = this.Orientation + target.Bearing;
 
-            if (Math.Round(relativeOrientation.Radians) != Math.Round(0.0, 9))
+            if (Math.Round(relativeOrientation.Radians, 1) != Math.Round(0.0, 1))
             {
                 if (relativeOrientation.Radians > Math.PI)
                 {
                     nextRotate = 0.05;
-                    
                 }
                 else
                 {
@@ -154,15 +211,26 @@
             }
             else if (target.Distance > 35)
             {
-                nextRotate *= 2;
-                nextMove = 2;
+                nextMove = 1;
             }
             else
             {
-                nextRotate *= 2;
                 nextMove = 0.0;
+
+                if (nextMove == 0.0)
+                {
+                    CollectTarget(Mission.Target);
+                }
             }
-            
+        }
+
+        public void CollectTarget(IEntity t)
+        {
+            this.Move(-10);
+            this.Rotate(Math.PI);
+            this.target = Mission.EndPoint;
+            parent.AddGameObject(target);
+            this.towedObject = t;
         }
     }
 }

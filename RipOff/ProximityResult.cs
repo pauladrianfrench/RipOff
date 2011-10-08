@@ -18,7 +18,7 @@
             double rad = (yourOrientation + Bearing).Radians;
             double twoPi = Math.PI * 2;
 
-            if (Math.Round(rad, 5) == 0.0)
+            if (Math.Round(rad, 1) == Math.Round(0.0, 1))
             {
                 return Heading.Ahead;
             }
