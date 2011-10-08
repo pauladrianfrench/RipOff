@@ -8,6 +8,8 @@
     public class EnemyTank : MovingEntity
     {
         public IEntity Target { get; set; }
+        double nextMove;
+        double nextRotate;
 
         public EnemyTank(GameArea ga)
             : base(ga)
@@ -17,6 +19,9 @@
             this.Outline.Add(new Line(new MatrixPoint(0, 15), new MatrixPoint(15, -15)));
             this.Outline.Add(new Line(new MatrixPoint(15, -15), new MatrixPoint(0, -2)));
             this.Outline.Add(new Line(new MatrixPoint(0, -2), new MatrixPoint(-15, -15)));
+
+            nextMove = 0.0;
+            nextRotate = 0.0;
         }
 
         public override void Destroy()
@@ -27,8 +32,28 @@
             base.Destroy();
         }
 
+        public override void Update()
+        {
+            base.Update();
+
+            if (nextMove != 0.0)
+            {
+                this.Move(nextMove);
+            }
+
+            if (nextRotate != 0.0)
+            {
+                this.Rotate(nextRotate);
+            }
+
+            nextMove = 0.0;
+            nextRotate = 0.0;
+        }
+
         public override ProximityResult DetectProximity(IEntity other)
         {
+            
+
             ProximityResult res = base.DetectProximity(other);
 
             if (res.Collision)
@@ -39,34 +64,45 @@
             }
             else
             {
-                if (other is Box)
+                // collision avoidance
+                if (other is Box || other is EnemyTank || other is Explosion)
                 {
-                    if (res.Distance < 150)
+                    if (res.Distance < 130)
                     {
                         if (res.GetHeading(this.Orientation) == Heading.Ahead)
                         {
-                            this.Rotate(-0.05);
-                            this.Move(2);
+                          nextRotate = -0.1;
+                          nextMove = 0;
                         }
                         else if (res.GetHeading(this.Orientation) == Heading.FineAheadLeft)
                         {
-                            this.Rotate(-0.05);
-                            this.Move(3);
+                            nextRotate = -0.2;
+                            nextMove = 1;
                         }
                         else if (res.GetHeading(this.Orientation) == Heading.FineAheadRight)
                         {
-                            this.Rotate(0.05);
-                            this.Move(3);
+                            nextRotate = 0.2;
+                            nextMove = 1;
                         }
                         else if (res.GetHeading(this.Orientation) == Heading.AheadLeft)
                         {
-                            this.Rotate(-0.05);
-                            this.Move(4);
+                            nextRotate = -0.05;
+                            nextMove = 4;
                         }
                         else if (res.GetHeading(this.Orientation) == Heading.AheadRight)
                         {
-                            this.Rotate(0.05);
-                            this.Move(4);
+                            nextRotate = 0.05;
+                            nextMove = 4;
+                        }
+                        else if (res.GetHeading(this.Orientation) == Heading.Right && res.Distance < 75)
+                        {
+                            nextRotate = 0.05;
+                            nextMove = 4;
+                        }
+                        else if (res.GetHeading(this.Orientation) == Heading.Left && res.Distance < 75)
+                        {
+                            nextRotate = -0.05;
+                            nextMove = 4;
                         }
                     }
                 }
@@ -87,15 +123,17 @@
             {
                 if (relativeOrientation.Radians > Math.PI)
                 {
-                    this.Rotate(0.05);
+                    nextRotate = 0.05;
+                    
                 }
                 else
                 {
-                    this.Rotate(-0.05);
+                    nextRotate = -0.05;
                 }
             }
 
-            this.Move(4);
+            nextMove = 4;
+            
         }
     }
 }
