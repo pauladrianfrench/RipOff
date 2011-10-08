@@ -62,14 +62,17 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FuelCell.cs" />
     <Compile Include="GameArea.cs" />
     <Compile Include="GameAreaBorder.cs" />
     <Compile Include="Interfaces\IMovingEntity.cs" />
+    <Compile Include="Interfaces\IMission.cs" />
     <Compile Include="Interfaces\IPlayerVehicle.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="MatrixPoint.cs" />
     <Compile Include="Missile.cs" />
+    <Compile Include="Mission.cs" />
     <Compile Include="MovingEntity.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

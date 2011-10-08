@@ -9,12 +9,14 @@ namespace RipOff
     public class GameArea
     {
         List<IEntity> gameObjects;
+        List<IMission> missions;
 
         public DrawParams DrawParam { get; set; }
 
         public GameArea()
         {
             gameObjects = new List<IEntity>();
+            missions = new List<IMission>();
         }
 
         public void Draw()
@@ -35,10 +37,6 @@ namespace RipOff
                 if (gameObjects[i] is PlayerVehicle)
                 {
                     playerExists = true;
-                    if (obj is EnemyTank)
-                    {
-                        (obj as EnemyTank).Target = gameObjects[i];
-                    }
                 }
             }
             if (!(obj is PlayerVehicle))
@@ -48,6 +46,26 @@ namespace RipOff
             else if (!playerExists)
             {
                 gameObjects.Add(obj);
+            }
+        }
+
+        public IMission GetNextMission()
+        {
+            int count = missions.Count;
+            if (count > 0)
+            {
+                IMission ret = missions[count-1];
+                missions.RemoveAt(count - 1);
+                return ret;
+            }
+            return null;
+        }
+
+        public void CollectMission(IMission mission)
+        {
+            if (!mission.Complete)
+            {
+                missions.Add(mission);
             }
         }
       

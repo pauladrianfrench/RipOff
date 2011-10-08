@@ -7,7 +7,7 @@
 
     public class EnemyTank : MovingEntity
     {
-        public IEntity Target { get; set; }
+        public IMission Mission { get; set; }
         double nextMove;
         double nextRotate;
 
@@ -22,10 +22,13 @@
 
             nextMove = 0.0;
             nextRotate = 0.0;
+
+            Mission = ga.GetNextMission();
         }
 
         public override void Destroy()
         {
+            parent.CollectMission(this.Mission);
             Explosion exp = new Explosion(parent, 50);
             exp.Centre = this.Centre;
             parent.AddGameObject(exp);
@@ -34,6 +37,15 @@
 
         public override void Update()
         {
+            if (Mission.Complete)
+            {
+                Mission = parent.GetNextMission();
+                if (Mission == null)
+                {
+                    this.Expired = true;
+                }
+            }
+            
             base.Update();
 
             if (nextMove != 0.0)
@@ -106,7 +118,7 @@
                         }
                     }
                 }
-                else if (Target != null && other == Target)
+                else if (Mission.Target != null && other == Mission.Target)
                 {
                     SeekTarget(res);
                 }
@@ -132,7 +144,24 @@
                 }
             }
 
-            nextMove = 4;
+            if (target.Distance > 150)
+            {
+                nextMove = 4;
+            }
+            else if (target.Distance > 120)
+            {
+                nextMove = 3;
+            }
+            else if (target.Distance > 35)
+            {
+                nextRotate *= 2;
+                nextMove = 2;
+            }
+            else
+            {
+                nextRotate *= 2;
+                nextMove = 0.0;
+            }
             
         }
     }
