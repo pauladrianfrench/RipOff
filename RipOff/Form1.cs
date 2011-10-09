@@ -41,11 +41,14 @@ namespace RipOff
             PlayerVehicle veh1 = new PlayerVehicle(gameArea);
             gameArea.AddGameObject(veh1);
 
-            IMission miss1 = new Mission { Target = cell1, Complete = false, EndPoint = new Entity(gameArea) { Centre = new MatrixPoint(300, -500) } };
-            gameArea.CollectMission(miss1);
-
             EnemyTank et1 = new EnemyTank(gameArea);
             et1.Centre = new MatrixPoint(-400, 0);
+
+            IMissionTarget t1 = new MissionTarget(cell1, MissionObjective.Collect);
+            IMission miss1 = new Mission();
+            miss1.Targets.Add(t1);
+
+            et1.Mission = miss1;
 
             gameArea.AddGameObject(et1);
 

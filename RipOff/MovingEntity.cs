@@ -88,7 +88,6 @@ namespace RipOff
         public virtual ProximityResult DetectProximity(IEntity other)
         {
             ProximityResult res = new ProximityResult();
-            res.Entity = other;
             res.Bearing = MatrixPoint.OrientationBetween(this.Centre, other.Centre);
             res.Distance = MatrixPoint.DistanceBetween(this.Centre, other.Centre);
             res.Collision = false;

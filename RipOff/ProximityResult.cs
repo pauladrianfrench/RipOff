@@ -8,7 +8,6 @@
 
     public class ProximityResult
     {
-        public IEntity Entity { get; set; }
         public bool Collision { get; set; }
         public Angle Bearing { get; set; }
         public double Distance { get; set; }

@@ -66,7 +66,7 @@ namespace RipOff
                 }
                 return res;
             }
-            return new ProximityResult { Collision = false, Entity = other };
+            return new ProximityResult { Collision = false };
         }
     }
 }

@@ -10,7 +10,6 @@
         public IMission Mission { get; set; }
         double nextMove;
         double nextRotate;
-        IEntity target;
         IEntity towedObject;
 
         public EnemyTank(GameArea ga)
@@ -22,11 +21,10 @@
             this.Outline.Add(new Line(new MatrixPoint(15, -15), new MatrixPoint(0, -2)));
             this.Outline.Add(new Line(new MatrixPoint(0, -2), new MatrixPoint(-15, -15)));
 
-            nextMove = 0.0;
-            nextRotate = 0.0;
+            this.nextMove = 0.0;
+            this.nextRotate = 0.0;
 
-            Mission = ga.GetNextMission();
-            target = Mission.Target;
+            this.Mission = ga.GetNextMission();
         }
 
         public override MatrixPoint Centre
@@ -36,7 +34,6 @@
             {
                 if (towedObject != null)
                 {
-                    
                     MatrixPoint initialCentre = this.Centre;
                     double initialDistance = MatrixPoint.DistanceBetween(this.Centre, towedObject.Centre);
 
@@ -125,6 +122,7 @@
         public override ProximityResult DetectProximity(IEntity other)
         {
             ProximityResult res = base.DetectProximity(other);
+            IEntity target = Mission.GetNextUncompletedTarget().Target;
 
             if (res.Collision)
             {
@@ -219,7 +217,7 @@
 
                 if (nextMove == 0.0)
                 {
-                    CollectTarget(Mission.Target);
+                    CollectTarget(Mission.GetNextUncompletedTarget().Target);
                 }
             }
         }
@@ -228,8 +226,6 @@
         {
             this.Move(-10);
             this.Rotate(Math.PI);
-            this.target = Mission.EndPoint;
-            parent.AddGameObject(target);
             this.towedObject = t;
         }
     }

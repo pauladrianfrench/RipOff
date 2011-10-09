@@ -7,8 +7,8 @@
 
     public interface IMission
     {
-        IEntity Target { get; set; }
-        IEntity EndPoint { get; set; }
-        bool Complete { get; set; }
+        List<IMissionTarget> Targets { get; set; }
+        bool Complete { get; }
+        IMissionTarget GetNextUncompletedTarget();
     }
 }
