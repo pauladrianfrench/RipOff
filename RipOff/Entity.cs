@@ -19,6 +19,7 @@ namespace RipOff
             this.Outline = new List<Line>();
             this.centre = new MatrixPoint(0, 0);
             this.Expired = false;
+            this.parent.AddGameObject(this);
         }
 
         public List<Line> Outline { get; set; }
@@ -57,7 +58,7 @@ namespace RipOff
             this.Expired = true;
         }
 
-        public void Draw(DrawParams dp)
+        public virtual void Draw(DrawParams dp)
         {
             foreach (Line l in this.Outline)
             {

@@ -16,6 +16,8 @@ namespace RipOff
        
         public Form1()
         {
+            this.DoubleBuffered = true;
+
             InitializeComponent();
 
             DrawParams dp = new DrawParams();
@@ -28,7 +30,7 @@ namespace RipOff
 
             time = new Timer();
             time.Enabled = true;
-            time.Interval = 25;
+            time.Interval = 500;
             time.Tick += UpdateGameArea;
 
             gameArea = new GameArea();
@@ -36,45 +38,44 @@ namespace RipOff
 
             FuelCell cell1 = new FuelCell(gameArea);
             cell1.Centre = new MatrixPoint(150, 150);
-            gameArea.AddGameObject(cell1);
-
+           
             PlayerVehicle veh1 = new PlayerVehicle(gameArea);
-            gameArea.AddGameObject(veh1);
-
+           
             EnemyTank et1 = new EnemyTank(gameArea);
             et1.Centre = new MatrixPoint(-400, 0);
 
-            IMissionTarget t1 = new MissionTarget(cell1, MissionObjective.Collect);
+            WayPoint p1 = new WayPoint(gameArea);
+            p1.Centre = new MatrixPoint(-150, 150);
+
+            WayPoint p2 = new WayPoint(gameArea);
+            p2.Centre = new MatrixPoint(250, -150);
+
             IMission miss1 = new Mission();
-            miss1.Targets.Add(t1);
+            miss1.Targets.Add(new MissionTarget(p1, MissionObjective.Visit));
+            miss1.Targets.Add(new MissionTarget(veh1, MissionObjective.Attack));
+            miss1.Targets.Add(new MissionTarget(cell1, MissionObjective.Collect));
+            miss1.Targets.Add(new MissionTarget(p2, MissionObjective.Visit));
 
             et1.Mission = miss1;
+            
+            FuelCell fuelCell1 = new FuelCell(gameArea);
+            fuelCell1.Centre = new MatrixPoint(-100, -100);
+           
+            FuelCell fuelCell2 = new FuelCell(gameArea);
+            fuelCell2.Centre = new MatrixPoint(-100, 100);
+            
+            FuelCell fuelCell3 = new FuelCell(gameArea);
+            fuelCell3.Centre = new MatrixPoint(100, 100);
 
-            gameArea.AddGameObject(et1);
+            FuelCell fuelCell4 = new FuelCell(gameArea);
+            fuelCell4.Centre = new MatrixPoint(100, -100);
 
-            Box box1 = new Box(gameArea);
-            box1.Centre = new MatrixPoint(-100, -100);
-            gameArea.AddGameObject(box1);
-
-            Box box2 = new Box(gameArea);
-            box2.Centre = new MatrixPoint(-100, 100);
-            gameArea.AddGameObject(box2);
-
-            Box box3 = new Box(gameArea);
-            box3.Centre = new MatrixPoint(100, 100);
-            gameArea.AddGameObject(box3);
-
-            Box box4 = new Box(gameArea);
-            box4.Centre = new MatrixPoint(100, -100);
-            gameArea.AddGameObject(box4);
-
-            Box box5 = new Box(gameArea);
-            box5.Centre = new MatrixPoint(200, -70);
-            gameArea.AddGameObject(box5);
-
-            Box box6 = new Box(gameArea);
-            box6.Centre = new MatrixPoint(200, -150);
-            gameArea.AddGameObject(box6);
+            FuelCell fuelCell5 = new FuelCell(gameArea);
+            fuelCell5.Centre = new MatrixPoint(200, -70);
+           
+            FuelCell fuelCell6 = new FuelCell(gameArea);
+            fuelCell6.Centre = new MatrixPoint(200, -150);
+              
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -132,27 +133,27 @@ namespace RipOff
 
             Box box1 = new Box(gameArea);
             box1.Centre = new MatrixPoint(-100 + rand.NextDouble() * 100, -100 + rand.NextDouble() * 100);
-            gameArea.AddGameObject(box1);
+           
 
             Box box2 = new Box(gameArea);
             box2.Centre = new MatrixPoint(-100 + rand.NextDouble() * 100, 100 + rand.NextDouble() * 100);
-            gameArea.AddGameObject(box2);
+            
 
             Box box3 = new Box(gameArea);
             box3.Centre = new MatrixPoint(100, 100 + rand.NextDouble() * 100 + rand.NextDouble() * 100);
-            gameArea.AddGameObject(box3);
+            
 
             Box box4 = new Box(gameArea);
             box4.Centre = new MatrixPoint(100 + rand.NextDouble() * 100, -100 + rand.NextDouble() * 100);
-            gameArea.AddGameObject(box4);
+           
 
             Box box5 = new Box(gameArea);
             box5.Centre = new MatrixPoint(200, -70 + rand.NextDouble() * 100 + rand.NextDouble() * 100);
-            gameArea.AddGameObject(box5);
+           
 
             Box box6 = new Box(gameArea);
             box6.Centre = new MatrixPoint(200 + rand.NextDouble() * 100, -150 + rand.NextDouble() * 100);
-            gameArea.AddGameObject(box6);
+           
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -160,8 +161,7 @@ namespace RipOff
 
             EnemyTank et1 = new EnemyTank(gameArea);
             et1.Centre = new MatrixPoint(-400, 0);
-
-            gameArea.AddGameObject(et1);
+            
         }
     }
 }

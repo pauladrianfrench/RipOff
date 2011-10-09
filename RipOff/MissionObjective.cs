@@ -2,7 +2,7 @@
 {
     public enum MissionObjective
     {
-        MoveTowards,
+        Visit,
         Collect,
         Attack,
         LayMine

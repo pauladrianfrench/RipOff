@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Drawing;
 
 namespace RipOff
 {
@@ -20,23 +18,28 @@ namespace RipOff
             this.Outline.Add(new Line(new MatrixPoint(0, -2), new MatrixPoint(0, 2)));
            
             Rotate(orientation.Radians);
-            Centre = centre;
+            this.Centre = centre;
 
             this.Range = range;
-
-            this.trace = new MatrixPoint(Outline[0].Point2.Xd, Outline[0].Point2.Yd);
+            this.trace = this.Centre;
 
             distanceTravelled = 0;
         }
 
+        public override MatrixPoint Centre
+        {
+            get { return base.Centre; }
+            set
+            {
+                trace = new MatrixPoint(this.Centre.Xd, this.Centre.Yd);
+                base.Centre = value;
+            }
+        }
+
         public override void Update()
         {
-            double traceX = Outline[0].Point2.Xd;
-            double traceY = Outline[0].Point2.Yd;
-            
-            this.trace = new MatrixPoint(traceX, traceY);
-
             double distance = 10;
+            
             Move(distance);
             
             distanceTravelled += distance;
@@ -49,7 +52,7 @@ namespace RipOff
         public override List<Line> GetPerimeter()
         {
             List<Line> per = new List<Line>();
-            per.Add(new Line(trace, Outline[0].Point2));
+            per.Add(new Line(trace, this.Centre));
             return per;
         }
 
@@ -57,7 +60,13 @@ namespace RipOff
         {
             if (!(other is Missile) && !(other is Explosion))
             {
+               
                 ProximityResult res = base.DetectProximity(other);
+                if (other is PlayerVehicle && res.Distance < 20)
+                {
+                    double val = res.Distance;
+                }
+
                 if (res.Collision)
                 {
                     this.Destroy();
@@ -67,6 +76,15 @@ namespace RipOff
                 return res;
             }
             return new ProximityResult { Collision = false };
+        }
+
+        public override void Draw(DrawParams dp)
+        {
+           // base.Draw(dp);
+            foreach (Line l in this.GetPerimeter())
+            {
+                dp.Graphics.DrawLine(dp.Pen, dp.Trans.TransPoint(new Point(l.Point1.X, l.Point1.Y)), dp.Trans.TransPoint(new Point(l.Point2.X, l.Point2.Y)));
+            }
         }
     }
 }

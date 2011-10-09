@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    
 
     public class EnemyTank : MovingEntity
     {
@@ -11,6 +12,8 @@
         double nextMove;
         double nextRotate;
         IEntity towedObject;
+        Line gunTip;
+        uint tickCount;
 
         public EnemyTank(GameArea ga)
             : base(ga)
@@ -21,10 +24,15 @@
             this.Outline.Add(new Line(new MatrixPoint(15, -15), new MatrixPoint(0, -2)));
             this.Outline.Add(new Line(new MatrixPoint(0, -2), new MatrixPoint(-15, -15)));
 
+            //gun tip, we'll use a zero length line to track the position of the gun tip
+            this.gunTip = new Line(new MatrixPoint(0, 20), new MatrixPoint(0, 20));
+            this.Outline.Add(gunTip);
+
             this.nextMove = 0.0;
             this.nextRotate = 0.0;
 
             this.Mission = ga.GetNextMission();
+            tickCount = 0;
         }
 
         public override MatrixPoint Centre
@@ -94,8 +102,11 @@
 
         public override void Update()
         {
-            if (Mission.Complete)
+            //tickCount++;
+            if (Mission != null && Mission.Complete)
             {
+                towedObject.Expired = true;
+                towedObject = null;
                 Mission = parent.GetNextMission();
                 if (Mission == null)
                 {
@@ -122,9 +133,13 @@
         public override ProximityResult DetectProximity(IEntity other)
         {
             ProximityResult res = base.DetectProximity(other);
-            IEntity target = Mission.GetNextUncompletedTarget().Target;
 
-            if (res.Collision)
+            if (Mission == null)
+            {
+                return res;
+            }
+
+            if (!(other is Explosion) && res.Collision)
             {
                 this.Destroy();
                 other.Destroy();
@@ -132,9 +147,13 @@
             }
             else
             {
-                // collision avoidance
-                if (other != target)
+                if (!Mission.Complete && Mission.GetNextUncompletedTarget().Target == other)
                 {
+                    SeekTarget(res);
+                }
+                else //if (!(other is Missile)) 
+                {
+                    // collision avoidance checks
                     if (res.Distance < 130)
                     {
                         if (res.GetHeading(this.Orientation) == Heading.Ahead)
@@ -174,18 +193,15 @@
                         }
                     }
                 }
-                else
-                {
-                    SeekTarget(res);
-                }
             }
 
             return res;
         }
 
-        private void SeekTarget(ProximityResult target)
+        private void SeekTarget(ProximityResult prox)
         {
-            Angle relativeOrientation = this.Orientation + target.Bearing;
+            IMissionTarget target = Mission.GetNextUncompletedTarget();
+            Angle relativeOrientation = this.Orientation + prox.Bearing;
 
             if (Math.Round(relativeOrientation.Radians, 1) != Math.Round(0.0, 1))
             {
@@ -199,25 +215,48 @@
                 }
             }
 
-            if (target.Distance > 150)
+            if (prox.Distance > 150)
             {
                 nextMove = 4;
             }
-            else if (target.Distance > 120)
+            else if (prox.Distance > 120)
             {
                 nextMove = 3;
             }
-            else if (target.Distance > 35)
+            else if (prox.Distance > 50)
             {
+                if (tickCount == 0.0 && target.Objective == MissionObjective.Attack)
+                {
+                    tickCount++;
+                    Missile m = new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
+                    parent.AddGameObject(m);
+                    target.Complete = target.Target.Expired;
+                }
                 nextMove = 1;
             }
             else
             {
-                nextMove = 0.0;
-
                 if (nextMove == 0.0)
                 {
-                    CollectTarget(Mission.GetNextUncompletedTarget().Target);
+                    switch(target.Objective)
+                    {
+                        case MissionObjective.Visit:
+                            target.Complete = true;
+                            break;
+                        case MissionObjective.Collect:
+                            CollectTarget(target.Target);
+                            target.Complete = true;
+                            break;
+                        case MissionObjective.LayMine:
+                            target.Complete = true;
+                            break;
+                        case MissionObjective.Attack:
+                            target.Complete = AttackTarget(target.Target);
+                            break;
+                        default:
+                            target.Complete = true;
+                            break;
+                    }
                 }
             }
         }
@@ -227,6 +266,14 @@
             this.Move(-10);
             this.Rotate(Math.PI);
             this.towedObject = t;
+        }
+
+        public bool AttackTarget(IEntity t)
+        {
+            Missile m = new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
+            parent.AddGameObject(m);
+
+            return t.Expired;
         }
     }
 }

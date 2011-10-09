@@ -56,6 +56,7 @@ namespace RipOff
             {
                 Missile m = new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
                 parent.AddGameObject(m);
+                shoot = false;
             }
 
             if (driveForward)
@@ -81,7 +82,7 @@ namespace RipOff
 
         public override void Destroy()
         {
-            Explosion exp = new Explosion(parent, 50);
+            Explosion exp = new Explosion(parent, 10);
             exp.Centre = this.Centre;
             parent.AddGameObject(exp);
             base.Destroy();

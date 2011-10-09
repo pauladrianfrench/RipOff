@@ -33,6 +33,11 @@ namespace RipOff
             }
         }
 
+        public override void Update()
+        {
+            base.Update();
+        }
+
         public virtual void Rotate(double rad)
         {
             int len = this.Outline.Count;

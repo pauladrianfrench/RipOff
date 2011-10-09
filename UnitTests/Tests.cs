@@ -138,5 +138,43 @@
             Assert.AreEqual(Math.Round(2.5, 9), Math.Round(a9.Radians, 9), "Angle 9 test");
         }
 
+        [Test]
+        public void TestMovingEntities()
+        {
+            GameArea ga = new GameArea();
+
+            MovingEntity mover = new MovingEntity(ga);
+
+            mover.Rotate(-Math.PI / 4);
+            mover.Move(10);
+            Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(mover.Centre.Xd,7), "Test move x");
+            Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(mover.Centre.Yd,7), "Test move y");
+
+            Missile m = new Missile(ga, mover.Orientation, new MatrixPoint(0,0), 1000);
+            m.Move(10);
+
+            Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(m.Centre.Xd, 7), "Missile move x");
+            Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(m.Centre.Yd, 7), "Missile move y");
+
+            Line trace = m.GetPerimeter()[0];
+            Assert.AreEqual(Math.Round(0.0, 7), Math.Round(trace.Point1.Xd, 7), "Trace move x");
+            Assert.AreEqual(Math.Round(0.0, 7), Math.Round(trace.Point1.Yd, 7), "Trace move y");
+            Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(trace.Point2.Xd, 7), "Trace move x");
+            Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(trace.Point2.Yd, 7), "Trace move y");
+
+            m.Move(10);
+            trace = m.GetPerimeter()[0];
+            Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(trace.Point1.Xd, 7), "Trace move x");
+            Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(trace.Point1.Yd, 7), "Trace move y");
+            Assert.AreEqual(Math.Round(2*Math.Sqrt(50), 7), Math.Round(trace.Point2.Xd, 7), "Trace move x");
+            Assert.AreEqual(Math.Round(2*Math.Sqrt(50), 7), Math.Round(trace.Point2.Yd, 7), "Trace move y");
+
+            m.Move(10);
+            trace = m.GetPerimeter()[0];
+            Assert.AreEqual(Math.Round(2*Math.Sqrt(50), 7), Math.Round(trace.Point1.Xd, 7), "Trace move x");
+            Assert.AreEqual(Math.Round(2*Math.Sqrt(50), 7), Math.Round(trace.Point1.Yd, 7), "Trace move y");
+            Assert.AreEqual(Math.Round(3 * Math.Sqrt(50), 7), Math.Round(trace.Point2.Xd, 7), "Trace move x");
+            Assert.AreEqual(Math.Round(3 * Math.Sqrt(50), 7), Math.Round(trace.Point2.Yd, 7), "Trace move y");
+        }
     }
 }
