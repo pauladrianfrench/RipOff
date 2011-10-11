@@ -52,7 +52,7 @@ namespace RipOff
             // finally we'll keep track of our orientation so we don't have to calculate it
             this.Orientation += rad;
         }
-        private void Rotate(Line l, double rad)
+        protected void Rotate(Line l, double rad)
         {
             // this rotates points about (0,0)
             // quick and nasty hack, shift item centre from current location to (0,0)

@@ -63,7 +63,7 @@ namespace RipOff
 
         public void CollectMission(IMission mission)
         {
-            if (!mission.Complete)
+            if (mission != null && !mission.Complete)
             {
                 missions.Add(mission);
             }

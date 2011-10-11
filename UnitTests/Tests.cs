@@ -6,14 +6,14 @@
     using System.Text;
     using NUnit.Framework;
     using RipOff;
-    
+
     [TestFixture]
     public class Tests
     {
         [Test]
         public void LineTests()
         {
-            Line line1 = new Line(new MatrixPoint(0, 5), new MatrixPoint(5, 10) );
+            Line line1 = new Line(new MatrixPoint(0, 5), new MatrixPoint(5, 10));
             Line line2 = new Line(new MatrixPoint(0, 10), new MatrixPoint(5, 0));
             Line line3 = new Line(new MatrixPoint(0, 4), new MatrixPoint(5, 0));
             Line line4 = new Line(new MatrixPoint(0, 0), new MatrixPoint(5, 5));
@@ -37,14 +37,14 @@
 
         [Test]
         public void TestCollisionDetection()
-        {    
+        {
             ////GameArea gameArea = new GameArea();
 
             ////PlayerVehicle veh1 = new PlayerVehicle(gameArea);
             ////gameArea.AddGameObject(veh1);
 
             ////Box box = new Box(gameArea);
-            
+
             ////gameArea.AddGameObject(box);
             ////Assert.AreEqual(Heading.Hit, veh1.DetectProximity(box), "Collision detection false negative");
 
@@ -67,16 +67,17 @@
             MatrixPoint p7 = new MatrixPoint(0, -5);
             MatrixPoint p8 = new MatrixPoint(-5, 0);
 
+            MatrixPoint p9 = new MatrixPoint(9, -28);
 
-            Assert.AreEqual(Math.Round(Math.PI/4, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p1).Radians, 9), "Orientation check 1");
+            Assert.AreEqual(Math.Round(Math.PI / 4, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p1).Radians, 9), "Orientation check 1");
             Assert.AreEqual(Math.Round(3 * Math.PI / 4, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p2).Radians, 9), "Orientation check 2");
             Assert.AreEqual(Math.Round(5 * Math.PI / 4, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p3).Radians, 9), "Orientation check 3");
             Assert.AreEqual(Math.Round(7 * Math.PI / 4, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p4).Radians, 9), "Orientation check 4");
 
-            Assert.AreEqual(Math.Round(0.0, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p5).Radians,9), "Orientation check 5");
-            Assert.AreEqual(Math.Round(Math.PI/2, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p6).Radians,9), "Orientation check 6");
-            Assert.AreEqual(Math.Round(Math.PI, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p7).Radians,9), "Orientation check 7");
-            Assert.AreEqual(Math.Round(Math.PI + Math.PI/2, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p8).Radians, 9), "Orientation check 8");
+            Assert.AreEqual(Math.Round(0.0, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p5).Radians, 9), "Orientation check 5");
+            Assert.AreEqual(Math.Round(Math.PI / 2, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p6).Radians, 9), "Orientation check 6");
+            Assert.AreEqual(Math.Round(Math.PI, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p7).Radians, 9), "Orientation check 7");
+            Assert.AreEqual(Math.Round(Math.PI + Math.PI / 2, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p8).Radians, 9), "Orientation check 8");
         }
 
         [Test]
@@ -115,7 +116,7 @@
             Assert.AreEqual(Math.Round(1.33, 9), Math.Round(a5.Radians, 9), "Angle 5 test");
 
             Angle a6 = new Angle(-(Math.PI - 1.5));
-            Assert.AreEqual(Math.Round(Math.PI + 1.5 , 9), Math.Round(a6.Radians, 9), "Angle 6 test");
+            Assert.AreEqual(Math.Round(Math.PI + 1.5, 9), Math.Round(a6.Radians, 9), "Angle 6 test");
 
             Angle a7 = new Angle(-(5 * Math.PI - 1.5));
             Assert.AreEqual(Math.Round(Math.PI + 1.5, 9), Math.Round(a7.Radians, 9), "Angle 7 test");
@@ -147,10 +148,10 @@
 
             mover.Rotate(-Math.PI / 4);
             mover.Move(10);
-            Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(mover.Centre.Xd,7), "Test move x");
-            Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(mover.Centre.Yd,7), "Test move y");
+            Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(mover.Centre.Xd, 7), "Test move x");
+            Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(mover.Centre.Yd, 7), "Test move y");
 
-            Missile m = new Missile(ga, mover.Orientation, new MatrixPoint(0,0), 1000);
+            Missile m = new Missile(ga, mover.Orientation, new MatrixPoint(0, 0), 1000);
             m.Move(10);
 
             Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(m.Centre.Xd, 7), "Missile move x");
@@ -166,15 +167,81 @@
             trace = m.GetPerimeter()[0];
             Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(trace.Point1.Xd, 7), "Trace move x");
             Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(trace.Point1.Yd, 7), "Trace move y");
-            Assert.AreEqual(Math.Round(2*Math.Sqrt(50), 7), Math.Round(trace.Point2.Xd, 7), "Trace move x");
-            Assert.AreEqual(Math.Round(2*Math.Sqrt(50), 7), Math.Round(trace.Point2.Yd, 7), "Trace move y");
+            Assert.AreEqual(Math.Round(2 * Math.Sqrt(50), 7), Math.Round(trace.Point2.Xd, 7), "Trace move x");
+            Assert.AreEqual(Math.Round(2 * Math.Sqrt(50), 7), Math.Round(trace.Point2.Yd, 7), "Trace move y");
 
             m.Move(10);
             trace = m.GetPerimeter()[0];
-            Assert.AreEqual(Math.Round(2*Math.Sqrt(50), 7), Math.Round(trace.Point1.Xd, 7), "Trace move x");
-            Assert.AreEqual(Math.Round(2*Math.Sqrt(50), 7), Math.Round(trace.Point1.Yd, 7), "Trace move y");
+            Assert.AreEqual(Math.Round(2 * Math.Sqrt(50), 7), Math.Round(trace.Point1.Xd, 7), "Trace move x");
+            Assert.AreEqual(Math.Round(2 * Math.Sqrt(50), 7), Math.Round(trace.Point1.Yd, 7), "Trace move y");
             Assert.AreEqual(Math.Round(3 * Math.Sqrt(50), 7), Math.Round(trace.Point2.Xd, 7), "Trace move x");
             Assert.AreEqual(Math.Round(3 * Math.Sqrt(50), 7), Math.Round(trace.Point2.Yd, 7), "Trace move y");
+
+            PlayerVehicle veh1 = new PlayerVehicle(ga);
+            Missile miss = new Missile(ga, new Angle(-3.0499999999999972), new MatrixPoint(-7.2369182872595275, 99.435069414788984), 1000);
+
+            trace = miss.GetPerimeter()[0];
+            Assert.AreEqual(Math.Round(-7.2369182872595275, 7), Math.Round(trace.Point1.Xd, 7), "Trace2 move x");
+            Assert.AreEqual(Math.Round(99.435069414788984, 7), Math.Round(trace.Point1.Yd, 7), "Trace2 move y");
+            Assert.AreEqual(Math.Round(-7.2369182872595275, 7), Math.Round(trace.Point2.Xd, 7), "Trace2 move x");
+            Assert.AreEqual(Math.Round(99.435069414788984, 7), Math.Round(trace.Point2.Yd, 7), "Trace2 move y");
+            Assert.False(miss.DetectProximity(veh1).Collision, "Collison check 1");
+
+            miss.Move(10);
+            trace = miss.GetPerimeter()[0];
+            Assert.AreEqual(Math.Round(-7.2369182872595275, 7), Math.Round(trace.Point1.Xd, 7), "Trace2 move x");
+            Assert.AreEqual(Math.Round(99.435069414788984, 7), Math.Round(trace.Point1.Yd, 7), "Trace2 move y");
+            Assert.AreEqual(Math.Round(-6.3222718999999996, 7), Math.Round(trace.Point2.Xd, 7), "Trace2 move x");
+            Assert.AreEqual(Math.Round(89.476986199999999, 7), Math.Round(trace.Point2.Yd, 7), "Trace2 move y");
+            Assert.False(miss.DetectProximity(veh1).Collision, "Collison check 2");
+
+            miss.Move(10);
+            trace = miss.GetPerimeter()[0];
+            Assert.AreEqual(Math.Round(-6.3222718999999996, 7), Math.Round(trace.Point1.Xd, 7), "Trace2 move x1");
+            Assert.AreEqual(Math.Round(89.476986199999999, 7), Math.Round(trace.Point1.Yd, 7), "Trace2 move y1");
+            Assert.AreEqual(Math.Round(-5.4076253999999997, 7), Math.Round(trace.Point2.Xd, 7), "Trace2 move x2");
+            Assert.AreEqual(Math.Round(79.5189029, 7), Math.Round(trace.Point2.Yd, 7), "Trace2 move y2");
+            Assert.False(miss.DetectProximity(veh1).Collision, "Collison check 3");
+
+            miss.Move(10);
+            trace = miss.GetPerimeter()[0];
+            Assert.AreEqual(Math.Round(-5.4076253999999997, 7), Math.Round(trace.Point1.Xd, 7), "Trace2 move x1");
+            Assert.AreEqual(Math.Round(79.5189029, 7), Math.Round(trace.Point1.Yd, 7), "Trace2 move y1");
+            Assert.AreEqual(Math.Round(-4.4929790000000001, 7), Math.Round(trace.Point2.Xd, 7), "Trace2 move x2");
+            Assert.AreEqual(Math.Round(69.560819699999996, 7), Math.Round(trace.Point2.Yd, 7), "Trace2 move y2");
+            Assert.False(miss.DetectProximity(veh1).Collision, "Collison check 4");
+
+            miss.Move(10);
+            miss.Move(10);
+            miss.Move(10);
+            miss.Move(10);
+            miss.Move(10);
+
+            miss.Move(10);
+            trace = miss.GetPerimeter()[0];
+            Assert.AreEqual(Math.Round(0.080253099999999994, 7), Math.Round(trace.Point1.Xd, 7), "Trace2 move x1");
+            Assert.AreEqual(Math.Round(19.7704035, 7), Math.Round(trace.Point1.Yd, 7), "Trace2 move y1");
+            Assert.AreEqual(Math.Round(0.99489950000000005, 7), Math.Round(trace.Point2.Xd, 7), "Trace2 move x2");
+            Assert.AreEqual(Math.Round(9.8123202000000003, 7), Math.Round(trace.Point2.Yd, 7), "Trace2 move y2");
+            Assert.True(miss.DetectProximity(veh1).Collision, "Collison check 5");
+
+            miss.Move(10);
+            trace = miss.GetPerimeter()[0];
+            Assert.AreEqual(Math.Round(0.99489950000000005, 7), Math.Round(trace.Point1.Xd, 7), "Trace2 move x1");
+            Assert.AreEqual(Math.Round(9.8123202000000003, 7), Math.Round(trace.Point1.Yd, 7), "Trace2 move y1");
+            Assert.AreEqual(Math.Round(1.9095458999999999, 7), Math.Round(trace.Point2.Xd, 7), "Trace2 move x2");
+            Assert.AreEqual(Math.Round(-0.145763, 7), Math.Round(trace.Point2.Yd, 7), "Trace2 move y2");
+            Assert.False(miss.DetectProximity(veh1).Collision, "Collison check 6");
+
+            miss.Move(10);
+            trace = miss.GetPerimeter()[0];
+            Assert.AreEqual(Math.Round(1.9095458999999999, 7), Math.Round(trace.Point1.Xd, 7), "Trace2 move x1");
+            Assert.AreEqual(Math.Round(-0.145763, 7), Math.Round(trace.Point1.Yd, 7), "Trace2 move y1");
+            Assert.AreEqual(Math.Round(2.8241923999999998, 7), Math.Round(trace.Point2.Xd, 7), "Trace2 move x2");
+            Assert.AreEqual(Math.Round(-10.103846300000001, 7), Math.Round(trace.Point2.Yd, 7), "Trace2 move y2");
+            Assert.True(miss.DetectProximity(veh1).Collision, "Collison check 7");
+
+
         }
     }
 }

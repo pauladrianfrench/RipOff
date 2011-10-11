@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
+﻿
 
 namespace RipOff
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Drawing;
+    using PaulMath;
+
     public class PlayerVehicle : MovingEntity, IPlayerVehicle
     {
         bool left;
@@ -15,34 +18,40 @@ namespace RipOff
         bool shoot;
         Line gunTip;
         List<Line> perimeter;
+        IEntity towedObject;
 
-        public PlayerVehicle(GameArea ga) 
+        public PlayerVehicle(GameArea ga)
             : base(ga)
         {
             //body
-            this.Outline.Add(new Line(new MatrixPoint(-10, -10), new MatrixPoint(-10, 10)));
-            this.Outline.Add(new Line(new MatrixPoint(-10, 10), new MatrixPoint(10, 10)));
-            this.Outline.Add(new Line(new MatrixPoint(10, 10), new MatrixPoint(10, -10)));
-            this.Outline.Add(new Line(new MatrixPoint(10, -10), new MatrixPoint(-10, -10)));
+            this.Outline.Add(new Line(new MatrixPoint(-5, -5), new MatrixPoint(-5, 5)));
+            this.Outline.Add(new Line(new MatrixPoint(-5, 5), new MatrixPoint(5, 5)));
+            this.Outline.Add(new Line(new MatrixPoint(5, 5), new MatrixPoint(5, -5)));
+            this.Outline.Add(new Line(new MatrixPoint(5, -5), new MatrixPoint(-5, -5)));
+
+            this.Outline.Add(new Line(new MatrixPoint(-5, 0), new MatrixPoint(-7, -7)));
+            this.Outline.Add(new Line(new MatrixPoint(-7, -7), new MatrixPoint(-5, -5)));
+            this.Outline.Add(new Line(new MatrixPoint(5, 0), new MatrixPoint(7, -7)));
+            this.Outline.Add(new Line(new MatrixPoint(7, -7), new MatrixPoint(5, -5)));
 
             perimeter = new List<Line>();
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < Outline.Count; i++)
             {
                 perimeter.Add(Outline[i]);
             }
 
             //gun tip, we'll use a zero length line to track the position of the gun tip
-            this.gunTip = new Line(new MatrixPoint(0, 20), new MatrixPoint(0, 20));
+            this.gunTip = new Line(new MatrixPoint(0, 15), new MatrixPoint(0, 15));
             this.Outline.Add(gunTip);
 
             //gun
-            this.Outline.Add(new Line(new MatrixPoint(-1, 10), new MatrixPoint(-1, 15)));
-            this.Outline.Add(new Line(new MatrixPoint(-1, 15), new MatrixPoint(1, 15)));
-            this.Outline.Add(new Line(new MatrixPoint(1, 15), new MatrixPoint(1, 10)));
+            this.Outline.Add(new Line(new MatrixPoint(-1, 5), new MatrixPoint(-1, 8)));
+            this.Outline.Add(new Line(new MatrixPoint(-1, 8), new MatrixPoint(1, 8)));
+            this.Outline.Add(new Line(new MatrixPoint(1, 8), new MatrixPoint(1, 5)));
 
             this.Centre = new MatrixPoint(0, 0);
-           
+
             left = false;
             right = false;
             driveForward = false;
@@ -50,23 +59,46 @@ namespace RipOff
             shoot = false;
         }
 
+        public override MatrixPoint Centre
+        {
+            get { return base.Centre; }
+            set
+            {
+                if (towedObject != null)
+                {
+                    base.Centre = value;
+                    Angle newOrientation = MatrixPoint.OrientationBetween(this.Centre, towedObject.Centre);
+
+                    MatrixPoint p = new MatrixPoint(0, 35);
+                    double[] rot = { Math.Cos(-newOrientation.Radians), -Math.Sin(-newOrientation.Radians), Math.Sin(-newOrientation.Radians), Math.Cos(-newOrientation.Radians) };
+                    Matrix m = new Matrix(rot, 2, 2);
+                    p.Matrix = m * p.Matrix;
+
+                    towedObject.Centre = this.Centre + p;
+                }
+                else
+                {
+                    base.Centre = value;
+                }
+            }
+        }
+
         public override void Update()
         {
             if (shoot)
             {
-                Missile m = new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
-                parent.AddGameObject(m);
+                new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
                 shoot = false;
             }
 
             if (driveForward)
             {
-                Move(5);
+                Move(4);
             }
 
             if (driveBackward)
             {
-                Move(-5);
+                Move(-4);
             }
 
             if (left)

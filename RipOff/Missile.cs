@@ -19,6 +19,7 @@ namespace RipOff
            
             Rotate(orientation.Radians);
             this.Centre = centre;
+            this.Move(5); // we make an initial move so we don't destroy whatever ever fired us
 
             this.Range = range;
             this.trace = this.Centre;
@@ -58,7 +59,7 @@ namespace RipOff
 
         public override ProximityResult DetectProximity(IEntity other)
         {
-            if (!(other is Missile) && !(other is Explosion))
+            if (other is MovingEntity && !(other is Missile))
             {
                
                 ProximityResult res = base.DetectProximity(other);
@@ -76,15 +77,6 @@ namespace RipOff
                 return res;
             }
             return new ProximityResult { Collision = false };
-        }
-
-        public override void Draw(DrawParams dp)
-        {
-           // base.Draw(dp);
-            foreach (Line l in this.GetPerimeter())
-            {
-                dp.Graphics.DrawLine(dp.Pen, dp.Trans.TransPoint(new Point(l.Point1.X, l.Point1.Y)), dp.Trans.TransPoint(new Point(l.Point2.X, l.Point2.Y)));
-            }
         }
     }
 }

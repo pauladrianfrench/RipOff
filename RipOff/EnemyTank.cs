@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    
+    using PaulMath;
 
     public class EnemyTank : MovingEntity
     {
@@ -14,18 +14,19 @@
         IEntity towedObject;
         Line gunTip;
         uint tickCount;
+        bool abortTarget;
 
         public EnemyTank(GameArea ga)
             : base(ga)
         {
             //body
-            this.Outline.Add(new Line(new MatrixPoint(-15, -15), new MatrixPoint(0, 15)));
-            this.Outline.Add(new Line(new MatrixPoint(0, 15), new MatrixPoint(15, -15)));
-            this.Outline.Add(new Line(new MatrixPoint(15, -15), new MatrixPoint(0, -2)));
-            this.Outline.Add(new Line(new MatrixPoint(0, -2), new MatrixPoint(-15, -15)));
+            this.Outline.Add(new Line(new MatrixPoint(-7, -7), new MatrixPoint(0, 7)));
+            this.Outline.Add(new Line(new MatrixPoint(0, 7), new MatrixPoint(7, -7)));
+            this.Outline.Add(new Line(new MatrixPoint(7, -7), new MatrixPoint(0, -2)));
+            this.Outline.Add(new Line(new MatrixPoint(0, -2), new MatrixPoint(-7, -7)));
 
             //gun tip, we'll use a zero length line to track the position of the gun tip
-            this.gunTip = new Line(new MatrixPoint(0, 20), new MatrixPoint(0, 20));
+            this.gunTip = new Line(new MatrixPoint(0, 10), new MatrixPoint(0, 10));
             this.Outline.Add(gunTip);
 
             this.nextMove = 0.0;
@@ -33,6 +34,8 @@
 
             this.Mission = ga.GetNextMission();
             tickCount = 0;
+
+            abortTarget = false;
         }
 
         public override MatrixPoint Centre
@@ -42,47 +45,22 @@
             {
                 if (towedObject != null)
                 {
-                    MatrixPoint initialCentre = this.Centre;
-                    double initialDistance = MatrixPoint.DistanceBetween(this.Centre, towedObject.Centre);
+                    if (towedObject != null)
+                    {
+                        base.Centre = value;
+                        Angle newOrientation = MatrixPoint.OrientationBetween(this.Centre, towedObject.Centre);
 
-                    base.Centre = value;
-                    Angle newOrientation = MatrixPoint.OrientationBetween(this.Centre, towedObject.Centre);
-                    MatrixPoint diff = new MatrixPoint(0,0);
+                        MatrixPoint p = new MatrixPoint(0, 20);
+                        double[] rot = { Math.Cos(-newOrientation.Radians), -Math.Sin(-newOrientation.Radians), Math.Sin(-newOrientation.Radians), Math.Cos(-newOrientation.Radians) };
+                        Matrix m = new Matrix(rot, 2, 2);
+                        p.Matrix = m * p.Matrix;
 
-                    if (newOrientation.Radians == 0.0)
-                    {
-                        diff = new MatrixPoint(0, initialDistance);
+                        towedObject.Centre = this.Centre + p;
                     }
-                    else if (newOrientation.Radians < Math.PI / 2)
+                    else
                     {
-                        diff = new MatrixPoint(Math.Cos(newOrientation.Radians) * initialDistance, Math.Sin(newOrientation.Radians) * initialDistance);
+                        base.Centre = value;
                     }
-                    else if (newOrientation.Radians == Math.PI/2)
-                    {
-                        diff = new MatrixPoint(initialDistance, 0);
-                    }
-                    else if (newOrientation.Radians > Math.PI / 2 && newOrientation.Radians < Math.PI)
-                    {
-                        diff = new MatrixPoint((Math.Cos(newOrientation.Radians - Math.PI/2)) * initialDistance, -Math.Sin(newOrientation.Radians - Math.PI/2) * initialDistance);
-                    }
-                    else if (newOrientation.Radians == Math.PI)
-                    {
-                        diff = new MatrixPoint(0, -initialDistance);
-                    }
-                    else if (newOrientation.Radians > Math.PI && newOrientation.Radians < 3* Math.PI / 2)
-                    {
-                        diff = new MatrixPoint(-Math.Cos(newOrientation.Radians - Math.PI) * initialDistance, -Math.Sin(newOrientation.Radians - Math.PI) * initialDistance);
-                    }
-                    else if (newOrientation.Radians == 3 * Math.PI / 2)
-                    {
-                        diff = new MatrixPoint(-initialDistance, 0);
-                    }
-                    else if (newOrientation.Radians > 3* Math.PI / 2 && newOrientation.Radians < 2 * Math.PI)
-                    {
-                        diff = new MatrixPoint(-Math.Cos(newOrientation.Radians - 3*Math.PI/2) * initialDistance, Math.Sin(newOrientation.Radians - 3*Math.PI/2) * initialDistance);
-                    }
-                    
-                    towedObject.Centre = this.Centre + diff;
                 }
                 else
                 {
@@ -102,10 +80,13 @@
 
         public override void Update()
         {
-            //tickCount++;
+            tickCount++;
             if (Mission != null && Mission.Complete)
             {
-                towedObject.Expired = true;
+                if (towedObject != null)
+                {
+                    towedObject.Expired = true;
+                }
                 towedObject = null;
                 Mission = parent.GetNextMission();
                 if (Mission == null)
@@ -113,7 +94,7 @@
                     this.Expired = true;
                 }
             }
-            
+
             base.Update();
 
             if (nextMove != 0.0)
@@ -151,10 +132,10 @@
                 {
                     SeekTarget(res);
                 }
-                else //if (!(other is Missile)) 
+                else if (!(other is Missile) && !(other is WayPoint)) 
                 {
                     // collision avoidance checks
-                    if (res.Distance < 130)
+                    if (res.Distance < 150)
                     {
                         if (res.GetHeading(this.Orientation) == Heading.Ahead)
                         {
@@ -163,22 +144,32 @@
                         }
                         else if (res.GetHeading(this.Orientation) == Heading.FineAheadLeft)
                         {
-                            nextRotate = -0.2;
-                            nextMove = 1;
+                            if ((tickCount % 5 == 0) && (other is PlayerVehicle))
+                            {
+                                new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
+                            }
+
+                            nextRotate = -0.3;
+                            nextMove = 2;
                         }
                         else if (res.GetHeading(this.Orientation) == Heading.FineAheadRight)
                         {
-                            nextRotate = 0.2;
-                            nextMove = 1;
+                            if ((tickCount % 5 == 0) && (other is PlayerVehicle))
+                            {
+                                new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
+                            }
+
+                            nextRotate = 0.3;
+                            nextMove = 2;
                         }
                         else if (res.GetHeading(this.Orientation) == Heading.AheadLeft)
                         {
-                            nextRotate = -0.05;
+                            nextRotate = -0.2;
                             nextMove = 4;
                         }
                         else if (res.GetHeading(this.Orientation) == Heading.AheadRight)
                         {
-                            nextRotate = 0.05;
+                            nextRotate = 0.2;
                             nextMove = 4;
                         }
                         else if (res.GetHeading(this.Orientation) == Heading.Right && res.Distance < 75)
@@ -215,30 +206,33 @@
                 }
             }
 
-            if (prox.Distance > 150)
+            if (prox.Distance > 200 )
             {
                 nextMove = 4;
             }
-            else if (prox.Distance > 120)
+            else if (prox.Distance > 150)
             {
-                nextMove = 3;
-            }
-            else if (prox.Distance > 50)
-            {
-                if (tickCount == 0.0 && target.Objective == MissionObjective.Attack)
+                if (tickCount % 10 == 0 && target.Objective == MissionObjective.Attack)
                 {
-                    tickCount++;
-                    Missile m = new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
-                    parent.AddGameObject(m);
+                    new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
                     target.Complete = target.Target.Expired;
                 }
-                nextMove = 1;
+                nextMove = 4;
             }
-            else
+            else if (prox.Distance > 30)
             {
-                if (nextMove == 0.0)
+                if (tickCount % 5 == 0 && target.Objective == MissionObjective.Attack)
                 {
-                    switch(target.Objective)
+                    new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
+                    target.Complete = target.Target.Expired;
+                }
+                nextMove = 4;
+            }
+            else 
+            {
+                //if (nextMove == 0.0)
+                {
+                    switch (target.Objective)
                     {
                         case MissionObjective.Visit:
                             target.Complete = true;
@@ -263,7 +257,7 @@
 
         public void CollectTarget(IEntity t)
         {
-            this.Move(-10);
+            this.Move(-5);
             this.Rotate(Math.PI);
             this.towedObject = t;
         }
@@ -271,8 +265,6 @@
         public bool AttackTarget(IEntity t)
         {
             Missile m = new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
-            parent.AddGameObject(m);
-
             return t.Expired;
         }
     }
