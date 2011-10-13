@@ -15,6 +15,7 @@
         Line gunTip;
         uint tickCount;
         bool abortTarget;
+        ProximityResult nearestObject;
 
         public EnemyTank(GameArea ga)
             : base(ga)
@@ -96,6 +97,17 @@
             }
 
             base.Update();
+            IEntity currentTarget = Mission.GetNextUncompletedTarget().Target;
+            double targetDistance = MatrixPoint.DistanceBetween(this.Centre, currentTarget.Centre);
+
+            if (nearestObject != null && nearestObject.Distance < 100 && nearestObject.Distance < targetDistance)
+            {
+                AvoidTarget(nearestObject);
+            }
+            else
+            {
+                SeekTarget(base.DetectProximity(currentTarget));
+            }
 
             if (nextMove != 0.0)
             {
@@ -115,78 +127,50 @@
         {
             ProximityResult res = base.DetectProximity(other);
 
-            if (Mission == null)
-            {
-                return res;
-            }
-
             if (!(other is Explosion) && res.Collision)
             {
+                // we're dead!
                 this.Destroy();
                 other.Destroy();
                 return res;
             }
-            else
+
+            if (Mission == null && !Mission.Complete)
             {
-                if (!Mission.Complete && Mission.GetNextUncompletedTarget().Target == other)
+                return res;
+            }
+
+            IEntity currentTarget = Mission.GetNextUncompletedTarget().Target;
+
+            if (res.Entity != currentTarget)
+            {
+                if (nearestObject == null)
                 {
-                    SeekTarget(res);
+                    nearestObject = res;
                 }
-                else if (!(other is Missile) && !(other is WayPoint)) 
+                else if (res.Distance < nearestObject.Distance && IsAhead(res) && !(res.Entity is Missile) && !(res.Entity is WayPoint))
                 {
-                    // collision avoidance checks
-                    if (res.Distance < 150)
-                    {
-                        if (res.GetHeading(this.Orientation) == Heading.Ahead)
-                        {
-                            nextRotate = -0.1;
-                            nextMove = 0;
-                        }
-                        else if (res.GetHeading(this.Orientation) == Heading.FineAheadLeft)
-                        {
-                            if ((tickCount % 5 == 0) && (other is PlayerVehicle))
-                            {
-                                new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
-                            }
-
-                            nextRotate = -0.3;
-                            nextMove = 2;
-                        }
-                        else if (res.GetHeading(this.Orientation) == Heading.FineAheadRight)
-                        {
-                            if ((tickCount % 5 == 0) && (other is PlayerVehicle))
-                            {
-                                new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
-                            }
-
-                            nextRotate = 0.3;
-                            nextMove = 2;
-                        }
-                        else if (res.GetHeading(this.Orientation) == Heading.AheadLeft)
-                        {
-                            nextRotate = -0.2;
-                            nextMove = 4;
-                        }
-                        else if (res.GetHeading(this.Orientation) == Heading.AheadRight)
-                        {
-                            nextRotate = 0.2;
-                            nextMove = 4;
-                        }
-                        else if (res.GetHeading(this.Orientation) == Heading.Right && res.Distance < 75)
-                        {
-                            nextRotate = 0.05;
-                            nextMove = 4;
-                        }
-                        else if (res.GetHeading(this.Orientation) == Heading.Left && res.Distance < 75)
-                        {
-                            nextRotate = -0.05;
-                            nextMove = 4;
-                        }
-                    }
+                    nearestObject = res;
                 }
             }
 
             return res;
+        }
+
+        private bool IsAhead(ProximityResult prox)
+        {
+            Heading relativeHeading = prox.GetHeading(this.Orientation);
+            switch (relativeHeading)
+            {
+                case Heading.Ahead:
+                case Heading.AheadLeft:
+                case Heading.AheadRight:
+                case Heading.FineAheadLeft:
+                case Heading.FineAheadRight:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private void SeekTarget(ProximityResult prox)
@@ -206,7 +190,7 @@
                 }
             }
 
-            if (prox.Distance > 200 )
+            if (prox.Distance > 200)
             {
                 nextMove = 4;
             }
@@ -228,29 +212,84 @@
                 }
                 nextMove = 4;
             }
-            else 
+            else
             {
-                //if (nextMove == 0.0)
+                switch (target.Objective)
                 {
-                    switch (target.Objective)
+                    case MissionObjective.Visit:
+                        target.Complete = true;
+                        break;
+                    case MissionObjective.Collect:
+                        CollectTarget(target.Target);
+                        target.Complete = true;
+                        break;
+                    case MissionObjective.LayMine:
+                        target.Complete = true;
+                        break;
+                    case MissionObjective.Attack:
+                        FireMissile();
+                        target.Complete = target.Target.Expired;
+                        break;
+                    default:
+                        target.Complete = true;
+                        break;
+                }
+            }
+        }
+
+        private void AvoidTarget(ProximityResult prox)
+        {
+            // collision avoidance checks
+            if (prox.Distance < 100)
+            {
+                if (prox.GetHeading(this.Orientation) == Heading.Ahead)
+                {
+                    if ((tickCount % 5 == 0) && (prox.Entity is PlayerVehicle)) // if it's the player, might as well have a pop
                     {
-                        case MissionObjective.Visit:
-                            target.Complete = true;
-                            break;
-                        case MissionObjective.Collect:
-                            CollectTarget(target.Target);
-                            target.Complete = true;
-                            break;
-                        case MissionObjective.LayMine:
-                            target.Complete = true;
-                            break;
-                        case MissionObjective.Attack:
-                            target.Complete = AttackTarget(target.Target);
-                            break;
-                        default:
-                            target.Complete = true;
-                            break;
+                        FireMissile();
                     }
+                    nextRotate = -0.1;
+                    nextMove = 0;
+                }
+                else if (prox.GetHeading(this.Orientation) == Heading.FineAheadLeft)
+                {
+                    if ((tickCount % 5 == 0) && (prox.Entity is PlayerVehicle)) // if it's the player, might as well have a pop
+                    {
+                        FireMissile();
+                    }
+
+                    nextRotate = -0.3;
+                    nextMove = 2;
+                }
+                else if (prox.GetHeading(this.Orientation) == Heading.FineAheadRight)
+                {
+                    if ((tickCount % 5 == 0) && (prox.Entity is PlayerVehicle)) // if it's the player, might as well have a pop
+                    {
+                        FireMissile();
+                    }
+
+                    nextRotate = 0.3;
+                    nextMove = 2;
+                }
+                else if (prox.GetHeading(this.Orientation) == Heading.AheadLeft)
+                {
+                    nextRotate = -0.2;
+                    nextMove = 4;
+                }
+                else if (prox.GetHeading(this.Orientation) == Heading.AheadRight)
+                {
+                    nextRotate = 0.2;
+                    nextMove = 4;
+                }
+                else if (prox.GetHeading(this.Orientation) == Heading.Right && prox.Distance < 75)
+                {
+                    nextRotate = 0.05;
+                    nextMove = 4;
+                }
+                else if (prox.GetHeading(this.Orientation) == Heading.Left && prox.Distance < 75)
+                {
+                    nextRotate = -0.05;
+                    nextMove = 4;
                 }
             }
         }
@@ -262,10 +301,9 @@
             this.towedObject = t;
         }
 
-        public bool AttackTarget(IEntity t)
+        public void FireMissile()
         {
             Missile m = new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
-            return t.Expired;
         }
     }
 }

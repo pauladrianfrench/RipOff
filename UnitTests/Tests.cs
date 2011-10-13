@@ -67,12 +67,30 @@
             MatrixPoint p7 = new MatrixPoint(0, -5);
             MatrixPoint p8 = new MatrixPoint(-5, 0);
 
-            MatrixPoint p9 = new MatrixPoint(9, -28);
+            MatrixPoint p1a = new MatrixPoint(4, 5);
+            MatrixPoint p1b = new MatrixPoint(6, 5);
+            MatrixPoint p2a = new MatrixPoint(6, -5);
+            MatrixPoint p2b = new MatrixPoint(4, -5);
+            MatrixPoint p3a = new MatrixPoint(-4, -5);
+            MatrixPoint p3b = new MatrixPoint(-6, -5);
+            MatrixPoint p4a = new MatrixPoint(-6, 5);
+            MatrixPoint p4b = new MatrixPoint(-4, 5);
 
+            Assert.AreEqual(Math.Round(0.674740942, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p1a).Radians, 9), "Orientation check 1a");
             Assert.AreEqual(Math.Round(Math.PI / 4, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p1).Radians, 9), "Orientation check 1");
+            Assert.AreEqual(Math.Round(0.876058051, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p1b).Radians, 9), "Orientation check 1b");
+
+            Assert.AreEqual(Math.Round(0.6947382762 + Math.PI / 2, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p2a).Radians, 9), "Orientation check 2a");
             Assert.AreEqual(Math.Round(3 * Math.PI / 4, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p2).Radians, 9), "Orientation check 2");
+            Assert.AreEqual(Math.Round(0.89605538457134 + Math.PI / 2, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p2b).Radians, 9), "Orientation check 2b");
+
+            Assert.AreEqual(Math.Round(0.67474094222 + Math.PI, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p3a).Radians, 9), "Orientation check 3a");
             Assert.AreEqual(Math.Round(5 * Math.PI / 4, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p3).Radians, 9), "Orientation check 3");
+            Assert.AreEqual(Math.Round(0.87605805060 + Math.PI, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p3b).Radians, 9), "Orientation check 3b");
+
+            Assert.Greater(Math.Round(7 * Math.PI / 4, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p4a).Radians, 9), "Orientation check 4a");
             Assert.AreEqual(Math.Round(7 * Math.PI / 4, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p4).Radians, 9), "Orientation check 4");
+            Assert.Less(Math.Round(7 * Math.PI / 4, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p4b).Radians, 9), "Orientation check 4b");
 
             Assert.AreEqual(Math.Round(0.0, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p5).Radians, 9), "Orientation check 5");
             Assert.AreEqual(Math.Round(Math.PI / 2, 9), Math.Round(MatrixPoint.OrientationBetween(centre, p6).Radians, 9), "Orientation check 6");
@@ -152,7 +170,7 @@
             Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(mover.Centre.Yd, 7), "Test move y");
 
             Missile m = new Missile(ga, mover.Orientation, new MatrixPoint(0, 0), 1000);
-            m.Move(10);
+            m.Move(5);
 
             Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(m.Centre.Xd, 7), "Missile move x");
             Assert.AreEqual(Math.Round(Math.Sqrt(50), 7), Math.Round(m.Centre.Yd, 7), "Missile move y");

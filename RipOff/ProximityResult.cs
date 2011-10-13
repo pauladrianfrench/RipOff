@@ -1,16 +1,13 @@
 ﻿namespace RipOff
 {
-
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
 
     public class ProximityResult
     {
         public bool Collision { get; set; }
         public Angle Bearing { get; set; }
         public double Distance { get; set; }
+        public IEntity Entity { get; set; }
 
         public Heading GetHeading(Angle yourOrientation)
         {
@@ -33,7 +30,7 @@
             {
                 return Heading.AheadRight;
             }
-            else if (rad >= 3*twoPi / 16 && rad < 5 * twoPi / 16)
+            else if (rad >= 3 * twoPi / 16 && rad < 5 * twoPi / 16)
             {
                 return Heading.Right;
             }

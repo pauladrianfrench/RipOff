@@ -25,7 +25,7 @@ namespace RipOff
             set
             {
                 MatrixPoint diff = value - centre;
-                
+
                 CentreLine.Point1 += diff;
                 CentreLine.Point2 += diff;
 
@@ -96,6 +96,7 @@ namespace RipOff
             res.Bearing = MatrixPoint.OrientationBetween(this.Centre, other.Centre);
             res.Distance = MatrixPoint.DistanceBetween(this.Centre, other.Centre);
             res.Collision = false;
+            res.Entity = other;
 
             List<Line> myOutline = this.GetPerimeter();
             List<Line> otherOutline = other.GetPerimeter();
