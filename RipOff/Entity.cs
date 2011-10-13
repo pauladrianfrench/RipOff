@@ -11,9 +11,9 @@ namespace RipOff
     public class Entity : IEntity
     {
         protected MatrixPoint centre;
-        protected GameArea parent;
+        protected GameController parent;
 
-        public Entity(GameArea ga)
+        public Entity(GameController ga)
         {
             this.parent = ga;
             this.Outline = new List<Line>();

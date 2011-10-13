@@ -63,7 +63,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="FuelCell.cs" />
-    <Compile Include="GameArea.cs" />
+    <Compile Include="GameController.cs" />
     <Compile Include="GameAreaBorder.cs" />
     <Compile Include="Interfaces\IMovingEntity.cs" />
     <Compile Include="Interfaces\IMission.cs" />

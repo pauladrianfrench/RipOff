@@ -9,7 +9,7 @@ namespace RipOff
 
     public class MovingEntity : Entity, IMovingEntity
     {
-        public MovingEntity(GameArea ga)
+        public MovingEntity(GameController ga)
             : base(ga)
         {
             this.Orientation = new Angle(0.0);

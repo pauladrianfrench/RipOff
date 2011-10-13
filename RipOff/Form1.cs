@@ -11,7 +11,7 @@ namespace RipOff
 {
     public partial class Form1 : Form
     {
-        static GameArea gameArea;
+        static GameController gameArea;
         Timer time;
 
         public Form1()
@@ -33,7 +33,7 @@ namespace RipOff
             time.Interval = 30;
             time.Tick += UpdateGameArea;
 
-            gameArea = new GameArea();
+            gameArea = new GameController();
             gameArea.DrawParam = dp;
 
             PlayerVehicle veh1 = new PlayerVehicle(gameArea);
@@ -64,7 +64,7 @@ namespace RipOff
             fuelCell8.Centre = new MatrixPoint(-40, -20);
 
             WayPoint p1 = new WayPoint(gameArea);
-            p1.Centre = new MatrixPoint(-150, 350);
+            p1.Centre = new MatrixPoint(-150, 150);
 
             WayPoint p2 = new WayPoint(gameArea);
             p2.Centre = new MatrixPoint(250, -150);
@@ -73,13 +73,13 @@ namespace RipOff
             p3.Centre = new MatrixPoint(-250, -250);
 
             WayPoint p4 = new WayPoint(gameArea);
-            p4.Centre = new MatrixPoint(350, 850);
+            p4.Centre = new MatrixPoint(35, 85);
 
             WayPoint p5 = new WayPoint(gameArea);
             p5.Centre = new MatrixPoint(100, 150);
 
             WayPoint p6 = new WayPoint(gameArea);
-            p6.Centre = new MatrixPoint(1000, 1500);
+            p6.Centre = new MatrixPoint(10, 150);
 
             IMission miss1 = new Mission();
             miss1.Targets.Add(new MissionTarget(p1, MissionObjective.Visit));
@@ -140,18 +140,18 @@ namespace RipOff
             gameArea.CollectMission(miss3);
             gameArea.CollectMission(miss4);
             gameArea.CollectMission(miss5);
-            gameArea.CollectMission(miss6); 
+            gameArea.CollectMission(miss6);
             gameArea.CollectMission(miss7);
             gameArea.CollectMission(miss8);
 
-            new EnemyTank(gameArea).Centre = new MatrixPoint(-500, 700);
-            new EnemyTank(gameArea).Centre = new MatrixPoint(2000, 3000);
-            new EnemyTank(gameArea).Centre = new MatrixPoint(700, 800);
+            new EnemyTank(gameArea).Centre = new MatrixPoint(-300, 900);
+            new EnemyTank(gameArea).Centre = new MatrixPoint(400, 400);
+            new EnemyTank(gameArea).Centre = new MatrixPoint(700, 80);
             new EnemyTank(gameArea).Centre = new MatrixPoint(-900, 900);
             new EnemyTank(gameArea).Centre = new MatrixPoint(1500, 1700);
-            new EnemyTank(gameArea).Centre = new MatrixPoint(-2500, 7000);
+            new EnemyTank(gameArea).Centre = new MatrixPoint(-2500, 3000);
             new EnemyTank(gameArea).Centre = new MatrixPoint(300, 600);
-            new EnemyTank(gameArea).Centre = new MatrixPoint(5000, 200);
+            new EnemyTank(gameArea).Centre = new MatrixPoint(2000, 200);
         }
 
         private void Form1_Load(object sender, EventArgs e)

@@ -7,7 +7,7 @@
 
     public class GameAreaBorder : Entity
     {
-        public GameAreaBorder(GameArea ga)
+        public GameAreaBorder(GameController ga)
             : base(ga)
         {
             Outline.Add(new Line(new MatrixPoint(-500, -280), new MatrixPoint(-500, 300)));

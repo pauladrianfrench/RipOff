@@ -11,7 +11,7 @@ namespace RipOff
 
         MatrixPoint trace;
 
-        public Missile(GameArea ga, Angle orientation, MatrixPoint centre, double range)
+        public Missile(GameController ga, Angle orientation, MatrixPoint centre, double range)
             : base(ga)
         {
             //body

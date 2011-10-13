@@ -20,7 +20,7 @@ namespace RipOff
         List<Line> perimeter;
         IEntity towedObject;
 
-        public PlayerVehicle(GameArea ga)
+        public PlayerVehicle(GameController ga)
             : base(ga)
         {
             //body

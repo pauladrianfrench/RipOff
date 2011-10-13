@@ -11,7 +11,7 @@ namespace RipOff
         int ageTicks;
         bool spawn;
 
-        public Explosion(GameArea ga, int lifeSpanTicks)
+        public Explosion(GameController ga, int lifeSpanTicks)
             : base(ga)
         {
             // bang

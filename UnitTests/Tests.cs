@@ -160,7 +160,7 @@
         [Test]
         public void TestMovingEntities()
         {
-            GameArea ga = new GameArea();
+            GameController ga = new GameController();
 
             MovingEntity mover = new MovingEntity(ga);
 

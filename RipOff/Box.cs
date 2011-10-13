@@ -7,7 +7,7 @@ namespace RipOff
 {
     public class Box : Entity
     {
-        public Box(GameArea ga)
+        public Box(GameController ga)
             : base(ga)
         {
             //box

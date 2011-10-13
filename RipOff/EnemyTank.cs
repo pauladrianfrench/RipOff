@@ -17,7 +17,7 @@
         bool abortTarget;
         ProximityResult nearestObject;
 
-        public EnemyTank(GameArea ga)
+        public EnemyTank(GameController ga)
             : base(ga)
         {
             //body
@@ -81,6 +81,7 @@
 
         public override void Update()
         {
+            base.Update();
             tickCount++;
             if (Mission != null && Mission.Complete)
             {
@@ -93,14 +94,21 @@
                 if (Mission == null)
                 {
                     this.Expired = true;
+                   
+                    return;
                 }
             }
 
-            base.Update();
+            IMissionTarget t = Mission.GetNextUncompletedTarget();
+            if (t == null || t.Target == null)
+            {
+                return;
+            }
+
             IEntity currentTarget = Mission.GetNextUncompletedTarget().Target;
             double targetDistance = MatrixPoint.DistanceBetween(this.Centre, currentTarget.Centre);
 
-            if (nearestObject != null && nearestObject.Distance < 100 && nearestObject.Distance < targetDistance)
+            if (nearestObject != null && nearestObject.Distance < 30 && nearestObject.Distance < targetDistance && IsAhead(nearestObject))
             {
                 AvoidTarget(nearestObject);
             }
@@ -135,7 +143,7 @@
                 return res;
             }
 
-            if (Mission == null && !Mission.Complete)
+            if (Mission == null || Mission.Complete)
             {
                 return res;
             }
@@ -148,9 +156,14 @@
                 {
                     nearestObject = res;
                 }
-                else if (res.Distance < nearestObject.Distance && IsAhead(res) && !(res.Entity is Missile) && !(res.Entity is WayPoint))
+                else if (res.Distance < nearestObject.Distance && IsAhead(res) && !(res.Entity is Missile) && !(res.Entity is WayPoint) && !(res.Entity is Explosion))
                 {
                     nearestObject = res;
+                }
+                else if (res.Entity == nearestObject.Entity && res.Distance > nearestObject.Distance)
+                {
+                    // we're moving away from it so set it to null
+                    nearestObject = null;
                 }
             }
 
@@ -192,16 +205,11 @@
 
             if (prox.Distance > 200)
             {
-                nextMove = 4;
+                nextMove = 3;
             }
             else if (prox.Distance > 150)
             {
-                if (tickCount % 10 == 0 && target.Objective == MissionObjective.Attack)
-                {
-                    new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
-                    target.Complete = target.Target.Expired;
-                }
-                nextMove = 4;
+                nextMove = 3;
             }
             else if (prox.Distance > 30)
             {
@@ -210,7 +218,7 @@
                     new Missile(parent, this.Orientation, this.gunTip.Point1, 1000);
                     target.Complete = target.Target.Expired;
                 }
-                nextMove = 4;
+                nextMove = 3;
             }
             else
             {
@@ -253,7 +261,7 @@
                 }
                 else if (prox.GetHeading(this.Orientation) == Heading.FineAheadLeft)
                 {
-                    if ((tickCount % 5 == 0) && (prox.Entity is PlayerVehicle)) // if it's the player, might as well have a pop
+                    if ((tickCount % 10 == 0) && (prox.Entity is PlayerVehicle)) // if it's the player, might as well have a pop
                     {
                         FireMissile();
                     }
@@ -263,7 +271,7 @@
                 }
                 else if (prox.GetHeading(this.Orientation) == Heading.FineAheadRight)
                 {
-                    if ((tickCount % 5 == 0) && (prox.Entity is PlayerVehicle)) // if it's the player, might as well have a pop
+                    if ((tickCount % 10 == 0) && (prox.Entity is PlayerVehicle)) // if it's the player, might as well have a pop
                     {
                         FireMissile();
                     }
@@ -274,22 +282,26 @@
                 else if (prox.GetHeading(this.Orientation) == Heading.AheadLeft)
                 {
                     nextRotate = -0.2;
-                    nextMove = 4;
+                    nextMove = 3;
                 }
                 else if (prox.GetHeading(this.Orientation) == Heading.AheadRight)
                 {
                     nextRotate = 0.2;
-                    nextMove = 4;
+                    nextMove = 3;
                 }
-                else if (prox.GetHeading(this.Orientation) == Heading.Right && prox.Distance < 75)
+                else if (prox.GetHeading(this.Orientation) == Heading.Right && prox.Distance < 40)
                 {
-                    nextRotate = 0.05;
-                    nextMove = 4;
+                    nextRotate = 0.08;
+                    nextMove = 2;
                 }
-                else if (prox.GetHeading(this.Orientation) == Heading.Left && prox.Distance < 75)
+                else if (prox.GetHeading(this.Orientation) == Heading.Left && prox.Distance < 40)
                 {
-                    nextRotate = -0.05;
-                    nextMove = 4;
+                    nextRotate = -0.08;
+                    nextMove = 2;
+                }
+                else
+                {
+                    nextMove = 3;
                 }
             }
         }
