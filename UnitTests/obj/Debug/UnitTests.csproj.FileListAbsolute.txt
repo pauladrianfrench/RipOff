@@ -3,9 +3,9 @@ C:\Projects\RipOff\UnitTests\bin\Debug\UnitTests.pdb
 C:\Projects\RipOff\UnitTests\bin\Debug\nunit.framework.dll
 C:\Projects\RipOff\UnitTests\bin\Debug\RipOff.exe
 C:\Projects\RipOff\UnitTests\bin\Debug\PaulMath.dll
-C:\Projects\RipOff\UnitTests\bin\Debug\RipOff.pdb
 C:\Projects\RipOff\UnitTests\bin\Debug\nunit.framework.xml
 C:\Projects\RipOff\UnitTests\bin\Debug\PaulMath.pdb
 C:\Projects\RipOff\UnitTests\obj\Debug\ResolveAssemblyReference.cache
 C:\Projects\RipOff\UnitTests\obj\Debug\UnitTests.dll
 C:\Projects\RipOff\UnitTests\obj\Debug\UnitTests.pdb
+C:\Projects\RipOff\UnitTests\bin\Debug\RipOff.pdb

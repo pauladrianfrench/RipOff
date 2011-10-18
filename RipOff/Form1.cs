@@ -6,16 +6,19 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace RipOff
 {
     public partial class Form1 : Form
     {
         static GameController gameArea;
-        Timer time;
+        System.Windows.Forms.Timer time;
 
         public Form1()
         {
+            new Thread(GameServer.Server).Start();
+
             this.DoubleBuffered = true;
 
             InitializeComponent();
@@ -28,7 +31,7 @@ namespace RipOff
             dp.Pen = new Pen(Color.Blue);
             dp.FillBrush = new SolidBrush(Color.GreenYellow);
 
-            time = new Timer();
+            time = new System.Windows.Forms.Timer();
             time.Enabled = true;
             time.Interval = 30;
             time.Tick += UpdateGameArea;

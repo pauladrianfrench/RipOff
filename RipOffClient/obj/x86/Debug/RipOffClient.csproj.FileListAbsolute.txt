@@ -1,0 +1,13 @@
+C:\Projects\RipOff\RipOffClient\bin\Debug\RipOffClient.exe
+C:\Projects\RipOff\RipOffClient\bin\Debug\RipOffClient.pdb
+C:\Projects\RipOff\RipOffClient\bin\Debug\RipOff.exe
+C:\Projects\RipOff\RipOffClient\bin\Debug\PaulMath.dll
+C:\Projects\RipOff\RipOffClient\bin\Debug\PaulMath.pdb
+C:\Projects\RipOff\RipOffClient\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Projects\RipOff\RipOffClient\obj\x86\Debug\RipOffClient.Form1.resources
+C:\Projects\RipOff\RipOffClient\obj\x86\Debug\RipOffClient.Properties.Resources.resources
+C:\Projects\RipOff\RipOffClient\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Projects\RipOff\RipOffClient\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Projects\RipOff\RipOffClient\obj\x86\Debug\RipOffClient.exe
+C:\Projects\RipOff\RipOffClient\obj\x86\Debug\RipOffClient.pdb
+C:\Projects\RipOff\RipOffClient\bin\Debug\RipOff.pdb
