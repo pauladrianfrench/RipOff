@@ -8,8 +8,10 @@
     using System.IO;
     using System.Threading;
 
-    public class GameServer
+    public static class GameServer
     {
+        public static GameController GameController { get; set; }
+        
         public static void Server()
         {
             TcpListener listener = new TcpListener(IPAddress.Any, 51111);
@@ -19,10 +21,31 @@
             using (NetworkStream n = c.GetStream())
             {
                 string msg = new BinaryReader(n).ReadString();
-                BinaryWriter w = new BinaryWriter(n);
-                w.Write(msg + "Right back!");
-                w.Flush();
 
+                if (msg == "a" || msg == "A")
+                {
+                    ActionParams ap = new ActionParams();
+
+                    ap.A = true;
+                    ap.D = false;
+                    ap.J = false;
+                    ap.L = false;
+                    ap.N = false;
+
+                    GameController.KeyDown(ap);
+                }
+                else if (msg == "d" || msg == "D")
+                {
+                    ActionParams ap = new ActionParams();
+
+                    ap.A = false;
+                    ap.D = true;
+                    ap.J = false;
+                    ap.L = false;
+                    ap.N = false;
+
+                    GameController.KeyDown(ap);
+                }
             }
             listener.Stop();
         }

@@ -11,13 +11,13 @@ namespace RipOffClient
 
     public class GameClient
     {
-        public static void Client()
+        public static void Client(string key)
         {
             using (TcpClient client = new TcpClient("localhost", 51111))
             using (NetworkStream n = client.GetStream())
             {
                 BinaryWriter w = new BinaryWriter(n);
-                w.Write("Hello shitbag");
+                w.Write(key);
                 w.Flush();
 
                 BinaryReader read = new BinaryReader(n);

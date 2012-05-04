@@ -27,7 +27,8 @@
             ap.L = e.KeyChar == 'l';
             ap.N = e.KeyChar == 'n';
 
-            GameClient.Client();
+            string key = e.KeyChar.ToString();
+            GameClient.Client(key);
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)

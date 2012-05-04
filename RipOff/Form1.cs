@@ -17,27 +17,26 @@ namespace RipOff
 
         public Form1()
         {
-            new Thread(GameServer.Server).Start();
-
+            InitializeComponent();
             this.DoubleBuffered = true;
 
-            InitializeComponent();
-
             DrawParams dp = new DrawParams();
-
             dp.Graphics = this.CreateGraphics();
             dp.Graphics.Clear(Color.White);
             dp.Trans = new Trans { XScale = 1, YScale = 1, Origin = new Point(510, 315) };
             dp.Pen = new Pen(Color.Blue);
             dp.FillBrush = new SolidBrush(Color.GreenYellow);
 
+            gameArea = new GameController();
+            gameArea.DrawParam = dp;
+
+            GameServer.GameController = gameArea;
+            new Thread(GameServer.Server).Start();
+
             time = new System.Windows.Forms.Timer();
             time.Enabled = true;
             time.Interval = 30;
             time.Tick += UpdateGameArea;
-
-            gameArea = new GameController();
-            gameArea.DrawParam = dp;
 
             PlayerVehicle veh1 = new PlayerVehicle(gameArea);
             veh1.Centre = new MatrixPoint(350, -200);
@@ -237,10 +236,8 @@ namespace RipOff
 
         private void button3_Click(object sender, EventArgs e)
         {
-
             EnemyTank et1 = new EnemyTank(gameArea);
             et1.Centre = new MatrixPoint(-400, 0);
-
         }
     }
 }
